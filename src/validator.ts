@@ -53,18 +53,23 @@ class Visitor implements SchemaVisitor<Node> {
     return new Node(node.text);
   }
   visitErrorNode(node: ErrorNode): Node {
-    throw new Error("Method not implemented.");
+    throw new Error(`Syntax error at: ${node.text}`);
   }
 }
 
 export function validate(data: string): boolean {
-  const stream = CharStreams.fromString(data);
-  const lexer = new SchemaLexer(stream);
-  const tokens = new CommonTokenStream(lexer);
-  const parser = new SchemaParser(tokens);
-  const ast = parser.start();
-  const visitor = new Visitor();
-  visitor.visit(ast);
-
-  return true;
+  try {
+    const stream = CharStreams.fromString(data);
+    const lexer = new SchemaLexer(stream);
+    const tokens = new CommonTokenStream(lexer);
+    const parser = new SchemaParser(tokens);
+    const ast = parser.start();
+    const visitor = new Visitor();
+    visitor.visit(ast);
+    return true;
+  } catch (error) {
+    const err = error as Error;
+    console.error(err.message);
+    return false;
+  }
 }

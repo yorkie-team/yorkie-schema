@@ -115,4 +115,26 @@ describe("Schema", () => {
     `;
     assert.isFalse(validate(schema));
   }); // fail
+
+  it("should not parse a schema with invalid syntax2", () => {
+    const schema = `
+      type Storage {
+        invalidField , boolean
+      }
+    `;
+    assert.isFalse(validate(schema));
+  }); 
+
+  it("should not parse a schema with invalid syntax3", () => {
+    const schema = `
+      type Storage {    
+        todos: Todo[]
+      }
+      type Todo {
+        title: string,
+        completed: boolean
+      }
+    `;
+    assert.isFalse(validate(schema));
+  }); // fail
 });
