@@ -137,4 +137,61 @@ describe("Schema", () => {
     `;
     assert.isFalse(validate(schema));
   }); // fail
+
+  it("multiple type definitions", () => {
+    const schema = `
+      type MyTypeName {
+      apple: string
+      banana: number
+      cookie: boolean
+      dog: number[]
+      string_or_number: string | number
+      array_of_string_or_number: (string | number)[]
+      complex: string | number | boolean[]
+      array_of_complex: (string | number | boolean)[]
+    }
+
+    type AnotherMyType {
+      mytypes: MyTypeName[]
+    }
+
+    type UserDetail {
+      address: string
+      age: number
+      foo: string | number | boolean
+      bar: string[]
+    }
+
+    type Root {
+      name: string
+      detail: UserDetail
+    }
+    `;
+    assert.isTrue(validate(schema));
+  }); // fail
+
+  it("anonymous type definition", () => {
+    const schema = `
+      type Storage  {
+        scientist: { name: string, age: number }
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+
+  it("value restriction", () => {
+    const schema = `
+      type Document  {
+        theme: "light" | "dark"
+        history: Event[]
+      }
+      
+      type Event {
+        statusCode: 200 | 400
+        info: string
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
 });
