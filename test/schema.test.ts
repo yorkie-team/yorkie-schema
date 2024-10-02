@@ -26,3 +26,93 @@ describe("Schema", () => {
     );
   });
 });
+
+describe("Schema", () => {
+  it("should parse a valid schema with basic types", () => {
+    const schema = `
+      type Storage {    
+        todos: Todo[]
+      }
+      type Todo {
+        title: string
+        completed: boolean
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+  it("should parse a schema using Yorkie's basic types with comma", () => {
+    const schema = `
+      type Storage {
+        data: yorkie.JSONObject
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+  it("should parse a schema using Yorkie's basic types", () => {
+    const schema = `
+      type Storage {
+        data: yorkieJSONObject
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+  it("should parse a schema using Yorkie's complex types with comma", () => {
+    const schema = `
+      type Storage {
+        todos: yorkie.JSONArray
+        counter: yorkie.Counter
+        text: yorkie.Text
+        tree: yorkie.Tree
+      }
+    `;
+    assert.isTrue(validate(schema));
+  }); // fail
+
+  it("should parse a schema using Yorkie's complex types", () => {
+    const schema = `
+      type Storage {
+        todos: yorkieJSONArray
+        counter: yorkieCounter
+        text: yorkieText
+        tree: yorkieTree
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+  it("should not parse a schema with undefined types", () => {
+    const schema = `
+      type Storage {
+        unknownType: Hello
+      }
+    `;
+    assert.isFalse(validate(schema));
+  }); // fail
+
+  it("should parse a schema with Yorkie's primitive types", () => {
+    const schema = `
+      type Storage {
+        nullValue: null
+        booleanValue: boolean
+        numberValue: number
+        longValue: long
+        stringValue: string
+        bytesValue: bytes
+        dateValue: Date
+      }
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+  it("should not parse a schema with invalid syntax", () => {
+    const schema = `
+      type Storage {
+        invalidField: 
+      }
+    `;
+    assert.isFalse(validate(schema));
+  }); // fail
+});
