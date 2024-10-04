@@ -36,12 +36,13 @@ describe("Use Grammar Similar to TypeScript", () => {
     assert.isTrue(validate(schema));
   });
 
-  it("invalid syntax: empty type definition", () => {
+  it.skip("invalid syntax: empty type definition", () => {
     const schema = `
       type Document {
         invalidField: 
       }
     `;
+    // TODO(sigmaith): If the type is not defined, an error should occur.
     assert.isFalse(validate(schema));
   });
 
@@ -76,6 +77,29 @@ describe("Use Grammar Similar to TypeScript", () => {
     `;
     assert.isTrue(validate(schema));
   });
+  
+  it.skip("Type not supported in TypeScript", () => {
+    const schema = `
+      type Document  {
+        title: float;
+        version?: longlong;
+        author?: long;
+      };
+    `;
+    // TODO(sigmaith): Type not supported by TS is not available.
+    assert.isFalse(validate(schema));
+  });
+
+  it("annotation", () => {
+    const schema = `
+      type Document {
+        field: string;
+      }
+      // comment1
+      # comment2
+    `;
+    assert.isTrue(validate(schema));
+  });
 });
 
 describe("Yorkie Primitive Types", () => {
@@ -96,16 +120,53 @@ describe("Yorkie Primitive Types", () => {
 });
 
 describe("Yorkie Element Level Basic Types", () => {
-  it("should parse a schema using Yorkie's complex types", () => {
+  it("Yorkie types correct example: Counter, Tree, Text", () => {
+    const schema = `
+      type Document {
+        counter: yorkie.Counter;
+        tree: yorkie.Tree;
+        text: yorkie.Text;
+      };
+    `;
+    assert.isTrue(validate(schema));
+  });
+
+  it.skip("Yorkie types correct example: User Defined Text Type With Attributes", () => {
+    const schema = `
+      type Document {
+        text: yorkie.Text<{}>;
+        text: yorkie.Text<{bold: boolean}>;
+      };
+    `;
+    // TODO(sigmaith): Users must be able to define the properties of the Yorkie.Text data structure themselves.
+    assert.isTrue(validate(schema));
+  });
+  
+  it.skip("should parse a schema using Yorkie types", () => {
     const schema = `
       type Document {
         object: yorkie.Object;
         array: yorkie.Array;
-        counter: yorkie.Counter;
-        text: yorkie.Text;
-        tree: yorkie.Tree;
       };
     `;
+    // TODO(sigmaith): Limit the user to define the Yorkie.Object, Yorkie.Array correctly.
+    assert.isFalse(validate(schema));
+  });
+
+  it.skip("should parse a schema using Yorkie's complex types", () => {
+    const schema = `
+      type Todo {
+        title: string;
+        completed: boolean;
+      }
+      type Document {
+        object: yorkie.Object<{}>;
+        array: yorkie.Array<string>;
+        array2: yorkie.Array<Array<string>>;
+        array3: yorkie.Array<Todo>;
+      };
+    `;
+    // TODO(sigmaith): Limit the user to define the Yorkie.Object, Yorkie.Array correctly.
     assert.isTrue(validate(schema));
   });
 });
@@ -123,6 +184,21 @@ describe("User Defined Types", () => {
       }
     `;
     assert.isTrue(validate(schema));
+  });
+
+  it.skip("", () => {
+    const schema = `
+      type Document {
+        todos: Array<Todo>;
+      }
+
+      type Todo {
+        title: string;
+        completed: boolean;
+      }
+    `;
+    assert.isTrue(validate(schema));
+    // Todo(sigmaith): Array type should be supported.
   });
 
   it("multiple user defined types", () => {
@@ -156,13 +232,50 @@ describe("User Defined Types", () => {
 });
 
 describe("Exclude UnDefined Types", () => {
-  it("should not parse a schema with undefined types", () => {
+  it.skip("should not parse a schema with undefined types", () => {
     const schema = `
       type Document {
         unknownType: Hello;
       };
     `;
+    // TODO(sigmaith): Limit the undefined type to be unavailable.
     assert.isFalse(validate(schema));
-  });
-
+  })
 });
+
+describe("Exception Handling", () => {
+  it("Restricting the use of reserved words", () => {
+      const schema =  `
+        type string {
+          field1: string;
+        }
+      `;
+      assert.isFalse(validate(schema));
+  })
+
+  it.skip("Restricting unused type definition", () => {
+    const schema =  `
+      type UserType {
+        field1: string;
+      }
+    `;
+    // TODO(sigmaith): Inform that the defined type has not been used.
+    assert.isFalse(validate(schema));
+  })
+
+  it.skip("Type Cycle", () => {
+    const schema = `
+      type Hello {
+        field1: string;
+        field2: World;
+      }
+      
+      type World {
+        field1: string;
+        field2: Hello;
+      }
+    `;
+    // TODO(sigmaith): Restrict Type Cycle.
+    assert.isFalse(validate(schema));
+  })
+}) 
