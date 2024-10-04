@@ -2,54 +2,105 @@ grammar Schema;
 
 // Lexer rules
 IDENTIFIER: [a-zA-Z_] [a-zA-Z0-9_]*;
-WHITESPACE: [ \t\n\r]+ -> skip;
+NEWLINE: '\r'? '\n' -> skip;
 COMMENT: ('//' | '#') ~[\r\n]* -> skip;
 DIGIT: [0-9];
+WHITESPACE: [ \t\n\r]+ -> skip;
 
 // Keywords
-YORKIE_JSON_ARRAY: 'yorkie.JSONArray';
-YORKIE_JSON_OBJECT: 'yorkie.JSONObject';
+YORKIE_OBJECT: 'yorkie.Object';
+YORKIE_ARRAY: 'yorkie.Array';
 YORKIE_COUNTER: 'yorkie.Counter';
 YORKIE_TEXT: 'yorkie.Text';
 YORKIE_TREE: 'yorkie.Tree';
 
 // Operations and Symbols
 MINUS: '-';
+SEMICOLON: ';';
+LPAREN: '(';
+RPAREN: ')';
+LCURLY: '{';
+RCURLY: '}';
+GT: '>';
+LT: '<';
+PIPE: '|';
+QUESTION: '?';
+EQ: '=';
+COMMA: ',';
+LSQUARE: '[';
+RSQUARE: ']';
 
-// Entry point of the grammar
-start: typeDefinitions EOF;
-typeDefinitions: typeDefinition (WHITESPACE* typeDefinitions)?;
-typeDefinition: 'type' IDENTIFIER '{' fieldList '}';
-fieldList: field (WHITESPACE* fieldList)?;
-field: IDENTIFIER WHITESPACE* ':' WHITESPACE* fieldType;
-fieldType: typeExpression arraySuffix*;
-typeExpression: unionType | simpleType;
-simpleType: primitiveType | literalType | IDENTIFIER;
-arraySuffix: '[]';
-unionType:
-	'(' WHITESPACE* unionTypeInner WHITESPACE* ')'
-	| unionTypeInner;
-unionTypeInner:
-	simpleType (WHITESPACE* '|' WHITESPACE* simpleType)*;
+// Utils
+DOUBLE_QUOTED_STRING: '"' (ESC | ~["\n])* '"';
+SINGLE_QUOTED_STRING: '\'' (ESC | ~['\n])* '\'';
+fragment ESC: '\\' [btnr\\'"];
+
+// Top-level rule
+document: definitionList EOF;
+
+definitionList: definition (WHITESPACE* definition)*;
+
+definition: objectTypeDefinition;
+
+typeName: IDENTIFIER;
+
+objectTypeDefinition
+	: 'type' WHITESPACE* typeName WHITESPACE* LCURLY WHITESPACE* 
+		fieldDefList? WHITESPACE* RCURLY SEMICOLON?
+	;
+
+fieldDefList
+	: fieldDef ( (COMMA | SEMICOLON | NEWLINE) fieldDef)*
+	;
+
+identifier: IDENTIFIER;
+
+fieldDef: identifier QUESTION? ':' type;
+
+type: nonUnionType (PIPE type)*;
+
+nonUnionType: nonUnionTypeL2 (LSQUARE RSQUARE)*;
+
+nonUnionTypeL2:
+	LPAREN type RPAREN
+	| objectLiteralType
+	| primitiveType
+	| literalType
+	| yorkieType
+	| typeReference;
+
+typeReference: typeName;
+objectLiteralType: LCURLY fieldDefList? RCURLY;
+
 primitiveType:
 	'string'
 	| 'number'
 	| 'boolean'
 	| 'null'
-	| YORKIE_JSON_ARRAY
-	| YORKIE_JSON_OBJECT
-	| YORKIE_COUNTER
-	| YORKIE_TEXT
-	| YORKIE_TREE;
+	| 'bigint'
+	| 'Uint8Array'
+	| 'Date';
+
 literalType:
 	booleanLiteralType
 	| numberLiteralType
 	| stringLiteralType;
+
 booleanLiteralType: 'true' | 'false';
+
 numberLiteralType: MINUS? DIGIT+ ('.' DIGIT+)?;
+
 stringLiteralType: DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING;
 
-DOUBLE_QUOTED_STRING: '"' (ESC | ~["\n])* '"';
+yorkieType:
+	yorkieObjectType
+	| yorkieArrayType
+	| yorkieCounterType
+	| yorkieTextType
+	| yorkieTreeType;
 
-SINGLE_QUOTED_STRING: '\'' (ESC | ~['\n])* '\'';
-fragment ESC: '\\' [btnr\\'"];
+yorkieObjectType: YORKIE_OBJECT LT GT;
+yorkieArrayType: YORKIE_ARRAY LT GT;
+yorkieCounterType: YORKIE_COUNTER LT GT;
+yorkieTextType: YORKIE_TEXT LT GT;
+yorkieTreeType: YORKIE_TREE LT GT;

@@ -3,19 +3,31 @@ import { ParseTree } from "antlr4ts/tree/ParseTree";
 import { SchemaLexer } from "../antlr/SchemaLexer";
 import { SchemaVisitor } from "../antlr/SchemaVisitor";
 import {
-  ArraySuffixContext,
-  FieldContext,
-  FieldListContext,
-  FieldTypeContext,
+  DocumentContext,
+  DefinitionListContext,
+  DefinitionContext,
+  ObjectTypeDefinitionContext,
+  TypeNameContext,
+  FieldDefListContext,
+  IdentifierContext,
+  FieldDefContext,
+  TypeContext,
+  NonUnionTypeContext,
+  NonUnionTypeL2Context,
+  TypeReferenceContext,
+  ObjectLiteralTypeContext,
   PrimitiveTypeContext,
+  LiteralTypeContext,
+  NumberLiteralTypeContext,
+  BooleanLiteralTypeContext,
+  StringLiteralTypeContext,
+  YorkieTypeContext,
+  YorkieObjectTypeContext,
+  YorkieArrayTypeContext,
+  YorkieCounterTypeContext,
+  YorkieTextTypeContext,
+  YorkieTreeTypeContext,
   SchemaParser,
-  SimpleTypeContext,
-  StartContext,
-  TypeDefinitionContext,
-  TypeDefinitionsContext,
-  TypeExpressionContext,
-  UnionTypeContext,
-  UnionTypeInnerContext,
 } from "../antlr/SchemaParser";
 import { ErrorNode } from "antlr4ts/tree/ErrorNode";
 import { RuleNode } from "antlr4ts/tree/RuleNode";
@@ -26,18 +38,30 @@ class Node {
 }
 
 class Visitor implements SchemaVisitor<Node> {
-  visitStart?: ((ctx: StartContext) => Node) | undefined;
-  visitTypeDefinitions?: ((ctx: TypeDefinitionsContext) => Node) | undefined;
-  visitTypeDefinition?: ((ctx: TypeDefinitionContext) => Node) | undefined;
-  visitFieldList?: ((ctx: FieldListContext) => Node) | undefined;
-  visitField?: ((ctx: FieldContext) => Node) | undefined;
-  visitFieldType?: ((ctx: FieldTypeContext) => Node) | undefined;
-  visitTypeExpression?: ((ctx: TypeExpressionContext) => Node) | undefined;
-  visitSimpleType?: ((ctx: SimpleTypeContext) => Node) | undefined;
-  visitArraySuffix?: ((ctx: ArraySuffixContext) => Node) | undefined;
-  visitUnionType?: ((ctx: UnionTypeContext) => Node) | undefined;
-  visitUnionTypeInner?: ((ctx: UnionTypeInnerContext) => Node) | undefined;
+  visitDocument?: ((ctx: DocumentContext) => Node) | undefined;
+  visitDefinitionList?: ((ctx: DefinitionListContext) => Node) | undefined;
+  visitDefinition?: ((ctx: DefinitionContext) => Node) | undefined;
+  visitTypeName?: ((ctx: TypeNameContext) => Node) | undefined;
+  visitObjectTypeDefinition?: ((ctx: ObjectTypeDefinitionContext) => Node) | undefined;
+  visitFieldDefList?: ((ctx: FieldDefListContext) => Node) | undefined;
+  visitTypeIdentifier?: ((ctx: IdentifierContext) => Node) | undefined;
+  visitFieldDef?: ((ctx: FieldDefContext) => Node) | undefined;
+  visitType?: ((ctx: TypeContext) => Node) | undefined;
+  visitNonUnionType?: ((ctx: NonUnionTypeContext) => Node) | undefined;
+  visitNonUnionTypeL2?: ((ctx: NonUnionTypeL2Context) => Node) | undefined;
+  visitTypeReference?: ((ctx: TypeReferenceContext) => Node) | undefined;
+  visitObjectLiteralType?: ((ctx: ObjectLiteralTypeContext) => Node) | undefined;
   visitPrimitiveType?: ((ctx: PrimitiveTypeContext) => Node) | undefined;
+  visitLiteralType?: ((ctx: LiteralTypeContext) => Node) | undefined;
+  visitNumberLiteralType?: ((ctx: NumberLiteralTypeContext) => Node) | undefined;
+  visitBooleanLiteralType?: ((ctx: BooleanLiteralTypeContext) => Node) | undefined;
+  visitStringLiteralType?: ((ctx: StringLiteralTypeContext) => Node) | undefined;
+  visitYorkieType?: ((ctx: YorkieTypeContext) => Node) | undefined;
+  visitYorkieObjectType?: ((ctx: YorkieObjectTypeContext) => Node) | undefined;
+  visitYorkieArrayType?: ((ctx: YorkieArrayTypeContext) => Node) | undefined;
+  visitYorkieCounterType?: ((ctx: YorkieCounterTypeContext) => Node) | undefined;
+  visitYorkieTextType?: ((ctx: YorkieTextTypeContext) => Node) | undefined;
+  visitYorkieTreeType?: ((ctx: YorkieTreeTypeContext) => Node) | undefined;
   visit(tree: ParseTree): Node {
     return tree.accept(this);
   }
@@ -63,7 +87,7 @@ export function validate(data: string): boolean {
     const lexer = new SchemaLexer(stream);
     const tokens = new CommonTokenStream(lexer);
     const parser = new SchemaParser(tokens);
-    const ast = parser.start();
+    const ast = parser.document();
     const visitor = new Visitor();
     visitor.visit(ast);
     return true;
