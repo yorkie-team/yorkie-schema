@@ -17,9 +17,6 @@ import { PrimitiveTypeContext } from "./YorkieSchemaParser";
 import { ObjectTypeContext } from "./YorkieSchemaParser";
 import { PropertySignatureContext } from "./YorkieSchemaParser";
 import { PropertyNameContext } from "./YorkieSchemaParser";
-import { FunctionTypeContext } from "./YorkieSchemaParser";
-import { ParameterListContext } from "./YorkieSchemaParser";
-import { ParameterContext } from "./YorkieSchemaParser";
 import { YorkieTypeContext } from "./YorkieSchemaParser";
 import { TypeReferenceContext } from "./YorkieSchemaParser";
 import { ParenthesizedTypeContext } from "./YorkieSchemaParser";
@@ -188,39 +185,6 @@ export interface YorkieSchemaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitPropertyName?: (ctx: PropertyNameContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `YorkieSchemaParser.functionType`.
-	 * @param ctx the parse tree
-	 */
-	enterFunctionType?: (ctx: FunctionTypeContext) => void;
-	/**
-	 * Exit a parse tree produced by `YorkieSchemaParser.functionType`.
-	 * @param ctx the parse tree
-	 */
-	exitFunctionType?: (ctx: FunctionTypeContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `YorkieSchemaParser.parameterList`.
-	 * @param ctx the parse tree
-	 */
-	enterParameterList?: (ctx: ParameterListContext) => void;
-	/**
-	 * Exit a parse tree produced by `YorkieSchemaParser.parameterList`.
-	 * @param ctx the parse tree
-	 */
-	exitParameterList?: (ctx: ParameterListContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `YorkieSchemaParser.parameter`.
-	 * @param ctx the parse tree
-	 */
-	enterParameter?: (ctx: ParameterContext) => void;
-	/**
-	 * Exit a parse tree produced by `YorkieSchemaParser.parameter`.
-	 * @param ctx the parse tree
-	 */
-	exitParameter?: (ctx: ParameterContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `YorkieSchemaParser.yorkieType`.

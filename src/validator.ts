@@ -33,7 +33,6 @@ class Visitor implements YorkieSchemaVisitor<Node> {
     return tree.accept(this);
   }
   visitChildren(node: RuleNode): Node {
-    console.log(node.text);
     for (let i = 0; i < node.childCount; i++) {
       const child = node.getChild(i);
       this.visit(child);
@@ -44,7 +43,7 @@ class Visitor implements YorkieSchemaVisitor<Node> {
     return new Node(node.text);
   }
   visitErrorNode(node: ErrorNode): Node {
-    return new Node(node.text);
+    throw new Error(`Syntax error at: ${node.text}`);
   }
 }
 
@@ -108,11 +107,16 @@ export function validate(data: string): boolean {
   const lexer = new YorkieSchemaLexer(stream);
   const tokens = new CommonTokenStream(lexer);
   const parser = new YorkieSchemaParser(tokens);
-  const ast = parser.declaration();
-  const visitor = new Visitor();
-  visitor.visit(ast);
 
-  return true;
+  try {
+    const ast = parser.declaration();
+    const visitor = new Visitor();
+    visitor.visit(ast);
+    return true;
+  } catch (e) {
+    console.error(`validation error: ${e}`);
+    return false;
+  }
 }
 
 export function getDiagnostics(data: string): Diagnostic[] {

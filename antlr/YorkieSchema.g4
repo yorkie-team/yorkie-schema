@@ -41,7 +41,6 @@ primaryType
     : parenthesizedType
     | primitiveType
     | objectType
-    | functionType
     | yorkieType
     | typeReference
     ;
@@ -67,18 +66,6 @@ propertySignature
 propertyName
     : Identifier
     | StringLiteral
-    ;
-
-functionType
-    : '(' parameterList? ')' '=>' type
-    ;
-
-parameterList
-    : parameter (',' parameter)*
-    ;
-
-parameter
-    : Identifier typeAnnotation?
     ;
 
 // Yorkie specific types
@@ -111,7 +98,7 @@ typeArguments
     : '<' type (',' type)* '>'
     ;
 
-// Expressions (simplified for this example)
+// Expressions
 expression
     : Identifier
     | literal
@@ -128,4 +115,6 @@ Identifier: [a-zA-Z_][a-zA-Z0-9_]*;
 StringLiteral: '"' (~["\r\n])* '"';
 NumberLiteral: [0-9]+('.'[0-9]+)?;
 BooleanLiteral: 'true' | 'false';
+SingleLineComment: '//' ~[\r\n]* -> channel(HIDDEN);
+MultiLineComment: '/*' .*? '*/' -> channel(HIDDEN);
 WS: [ \t\r\n]+ -> skip;

@@ -57,12 +57,13 @@ export class YorkieSchemaParser extends Parser {
 	public static readonly T__26 = 27;
 	public static readonly T__27 = 28;
 	public static readonly T__28 = 29;
-	public static readonly T__29 = 30;
-	public static readonly Identifier = 31;
-	public static readonly StringLiteral = 32;
-	public static readonly NumberLiteral = 33;
-	public static readonly BooleanLiteral = 34;
-	public static readonly WS = 35;
+	public static readonly Identifier = 30;
+	public static readonly StringLiteral = 31;
+	public static readonly NumberLiteral = 32;
+	public static readonly BooleanLiteral = 33;
+	public static readonly SingleLineComment = 34;
+	public static readonly MultiLineComment = 35;
+	public static readonly WS = 36;
 	public static readonly RULE_document = 0;
 	public static readonly RULE_declaration = 1;
 	public static readonly RULE_typeAliasDeclaration = 2;
@@ -77,41 +78,36 @@ export class YorkieSchemaParser extends Parser {
 	public static readonly RULE_objectType = 11;
 	public static readonly RULE_propertySignature = 12;
 	public static readonly RULE_propertyName = 13;
-	public static readonly RULE_functionType = 14;
-	public static readonly RULE_parameterList = 15;
-	public static readonly RULE_parameter = 16;
-	public static readonly RULE_yorkieType = 17;
-	public static readonly RULE_typeReference = 18;
-	public static readonly RULE_parenthesizedType = 19;
-	public static readonly RULE_typeParameters = 20;
-	public static readonly RULE_typeParameter = 21;
-	public static readonly RULE_typeArguments = 22;
-	public static readonly RULE_expression = 23;
-	public static readonly RULE_literal = 24;
+	public static readonly RULE_yorkieType = 14;
+	public static readonly RULE_typeReference = 15;
+	public static readonly RULE_parenthesizedType = 16;
+	public static readonly RULE_typeParameters = 17;
+	public static readonly RULE_typeParameter = 18;
+	public static readonly RULE_typeArguments = 19;
+	public static readonly RULE_expression = 20;
+	public static readonly RULE_literal = 21;
 	// tslint:disable:no-trailing-whitespace
 	public static readonly ruleNames: string[] = [
 		"document", "declaration", "typeAliasDeclaration", "variableDeclaration", 
 		"typeAnnotation", "type", "unionType", "intersectionType", "arrayType", 
 		"primaryType", "primitiveType", "objectType", "propertySignature", "propertyName", 
-		"functionType", "parameterList", "parameter", "yorkieType", "typeReference", 
-		"parenthesizedType", "typeParameters", "typeParameter", "typeArguments", 
-		"expression", "literal",
+		"yorkieType", "typeReference", "parenthesizedType", "typeParameters", 
+		"typeParameter", "typeArguments", "expression", "literal",
 	];
 
 	private static readonly _LITERAL_NAMES: Array<string | undefined> = [
 		undefined, "'type'", "'='", "';'", "'let'", "':'", "'|'", "'&'", "'['", 
 		"']'", "'number'", "'string'", "'boolean'", "'any'", "'void'", "'null'", 
-		"'undefined'", "'{'", "'}'", "'('", "')'", "'=>'", "','", "'yorkie.Object'", 
-		"'yorkie.Array'", "'yorkie.Counter'", "'yorkie.Text'", "'yorkie.Tree'", 
-		"'<'", "'>'", "'extends'",
+		"'undefined'", "'{'", "'}'", "'yorkie.Object'", "'yorkie.Array'", "'yorkie.Counter'", 
+		"'yorkie.Text'", "'yorkie.Tree'", "'('", "')'", "'<'", "','", "'>'", "'extends'",
 	];
 	private static readonly _SYMBOLIC_NAMES: Array<string | undefined> = [
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
 		undefined, undefined, undefined, undefined, undefined, undefined, undefined, 
-		undefined, undefined, undefined, "Identifier", "StringLiteral", "NumberLiteral", 
-		"BooleanLiteral", "WS",
+		undefined, undefined, "Identifier", "StringLiteral", "NumberLiteral", 
+		"BooleanLiteral", "SingleLineComment", "MultiLineComment", "WS",
 	];
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(YorkieSchemaParser._LITERAL_NAMES, YorkieSchemaParser._SYMBOLIC_NAMES, []);
 
@@ -147,21 +143,21 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 53;
+			this.state = 47;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la === YorkieSchemaParser.T__0 || _la === YorkieSchemaParser.T__3) {
 				{
 				{
-				this.state = 50;
+				this.state = 44;
 				this.declaration();
 				}
 				}
-				this.state = 55;
+				this.state = 49;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 56;
+			this.state = 50;
 			this.match(YorkieSchemaParser.EOF);
 			}
 		}
@@ -184,20 +180,20 @@ export class YorkieSchemaParser extends Parser {
 		let _localctx: DeclarationContext = new DeclarationContext(this._ctx, this.state);
 		this.enterRule(_localctx, 2, YorkieSchemaParser.RULE_declaration);
 		try {
-			this.state = 60;
+			this.state = 54;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case YorkieSchemaParser.T__0:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 58;
+				this.state = 52;
 				this.typeAliasDeclaration();
 				}
 				break;
 			case YorkieSchemaParser.T__3:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 59;
+				this.state = 53;
 				this.variableDeclaration();
 				}
 				break;
@@ -227,25 +223,25 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 62;
+			this.state = 56;
 			this.match(YorkieSchemaParser.T__0);
-			this.state = 63;
+			this.state = 57;
 			this.match(YorkieSchemaParser.Identifier);
-			this.state = 65;
+			this.state = 59;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === YorkieSchemaParser.T__27) {
+			if (_la === YorkieSchemaParser.T__25) {
 				{
-				this.state = 64;
+				this.state = 58;
 				this.typeParameters();
 				}
 			}
 
-			this.state = 67;
+			this.state = 61;
 			this.match(YorkieSchemaParser.T__1);
-			this.state = 68;
+			this.state = 62;
 			this.type();
-			this.state = 69;
+			this.state = 63;
 			this.match(YorkieSchemaParser.T__2);
 			}
 		}
@@ -271,33 +267,33 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 71;
+			this.state = 65;
 			this.match(YorkieSchemaParser.T__3);
-			this.state = 72;
+			this.state = 66;
 			this.match(YorkieSchemaParser.Identifier);
-			this.state = 74;
+			this.state = 68;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === YorkieSchemaParser.T__4) {
 				{
-				this.state = 73;
+				this.state = 67;
 				this.typeAnnotation();
 				}
 			}
 
-			this.state = 78;
+			this.state = 72;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			if (_la === YorkieSchemaParser.T__1) {
 				{
-				this.state = 76;
+				this.state = 70;
 				this.match(YorkieSchemaParser.T__1);
-				this.state = 77;
+				this.state = 71;
 				this.expression();
 				}
 			}
 
-			this.state = 80;
+			this.state = 74;
 			this.match(YorkieSchemaParser.T__2);
 			}
 		}
@@ -322,9 +318,9 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 82;
+			this.state = 76;
 			this.match(YorkieSchemaParser.T__4);
-			this.state = 83;
+			this.state = 77;
 			this.type();
 			}
 		}
@@ -349,7 +345,7 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 85;
+			this.state = 79;
 			this.unionType();
 			}
 		}
@@ -371,29 +367,27 @@ export class YorkieSchemaParser extends Parser {
 	public unionType(): UnionTypeContext {
 		let _localctx: UnionTypeContext = new UnionTypeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 12, YorkieSchemaParser.RULE_unionType);
+		let _la: number;
 		try {
-			let _alt: number;
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 87;
+			this.state = 81;
 			this.intersectionType();
-			this.state = 92;
+			this.state = 86;
 			this._errHandler.sync(this);
-			_alt = this.interpreter.adaptivePredict(this._input, 5, this._ctx);
-			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
-				if (_alt === 1) {
-					{
-					{
-					this.state = 88;
-					this.match(YorkieSchemaParser.T__5);
-					this.state = 89;
-					this.intersectionType();
-					}
-					}
+			_la = this._input.LA(1);
+			while (_la === YorkieSchemaParser.T__5) {
+				{
+				{
+				this.state = 82;
+				this.match(YorkieSchemaParser.T__5);
+				this.state = 83;
+				this.intersectionType();
 				}
-				this.state = 94;
+				}
+				this.state = 88;
 				this._errHandler.sync(this);
-				_alt = this.interpreter.adaptivePredict(this._input, 5, this._ctx);
+				_la = this._input.LA(1);
 			}
 			}
 		}
@@ -415,29 +409,27 @@ export class YorkieSchemaParser extends Parser {
 	public intersectionType(): IntersectionTypeContext {
 		let _localctx: IntersectionTypeContext = new IntersectionTypeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 14, YorkieSchemaParser.RULE_intersectionType);
+		let _la: number;
 		try {
-			let _alt: number;
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 95;
+			this.state = 89;
 			this.arrayType();
-			this.state = 100;
+			this.state = 94;
 			this._errHandler.sync(this);
-			_alt = this.interpreter.adaptivePredict(this._input, 6, this._ctx);
-			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
-				if (_alt === 1) {
-					{
-					{
-					this.state = 96;
-					this.match(YorkieSchemaParser.T__6);
-					this.state = 97;
-					this.arrayType();
-					}
-					}
+			_la = this._input.LA(1);
+			while (_la === YorkieSchemaParser.T__6) {
+				{
+				{
+				this.state = 90;
+				this.match(YorkieSchemaParser.T__6);
+				this.state = 91;
+				this.arrayType();
 				}
-				this.state = 102;
+				}
+				this.state = 96;
 				this._errHandler.sync(this);
-				_alt = this.interpreter.adaptivePredict(this._input, 6, this._ctx);
+				_la = this._input.LA(1);
 			}
 			}
 		}
@@ -459,29 +451,27 @@ export class YorkieSchemaParser extends Parser {
 	public arrayType(): ArrayTypeContext {
 		let _localctx: ArrayTypeContext = new ArrayTypeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 16, YorkieSchemaParser.RULE_arrayType);
+		let _la: number;
 		try {
-			let _alt: number;
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 103;
+			this.state = 97;
 			this.primaryType();
-			this.state = 108;
+			this.state = 102;
 			this._errHandler.sync(this);
-			_alt = this.interpreter.adaptivePredict(this._input, 7, this._ctx);
-			while (_alt !== 2 && _alt !== ATN.INVALID_ALT_NUMBER) {
-				if (_alt === 1) {
-					{
-					{
-					this.state = 104;
-					this.match(YorkieSchemaParser.T__7);
-					this.state = 105;
-					this.match(YorkieSchemaParser.T__8);
-					}
-					}
+			_la = this._input.LA(1);
+			while (_la === YorkieSchemaParser.T__7) {
+				{
+				{
+				this.state = 98;
+				this.match(YorkieSchemaParser.T__7);
+				this.state = 99;
+				this.match(YorkieSchemaParser.T__8);
 				}
-				this.state = 110;
+				}
+				this.state = 104;
 				this._errHandler.sync(this);
-				_alt = this.interpreter.adaptivePredict(this._input, 7, this._ctx);
+				_la = this._input.LA(1);
 			}
 			}
 		}
@@ -504,56 +494,56 @@ export class YorkieSchemaParser extends Parser {
 		let _localctx: PrimaryTypeContext = new PrimaryTypeContext(this._ctx, this.state);
 		this.enterRule(_localctx, 18, YorkieSchemaParser.RULE_primaryType);
 		try {
-			this.state = 117;
+			this.state = 110;
 			this._errHandler.sync(this);
-			switch ( this.interpreter.adaptivePredict(this._input, 8, this._ctx) ) {
-			case 1:
+			switch (this._input.LA(1)) {
+			case YorkieSchemaParser.T__23:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 111;
+				this.state = 105;
 				this.parenthesizedType();
 				}
 				break;
-
-			case 2:
+			case YorkieSchemaParser.T__9:
+			case YorkieSchemaParser.T__10:
+			case YorkieSchemaParser.T__11:
+			case YorkieSchemaParser.T__12:
+			case YorkieSchemaParser.T__13:
+			case YorkieSchemaParser.T__14:
+			case YorkieSchemaParser.T__15:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 112;
+				this.state = 106;
 				this.primitiveType();
 				}
 				break;
-
-			case 3:
+			case YorkieSchemaParser.T__16:
 				this.enterOuterAlt(_localctx, 3);
 				{
-				this.state = 113;
+				this.state = 107;
 				this.objectType();
 				}
 				break;
-
-			case 4:
+			case YorkieSchemaParser.T__18:
+			case YorkieSchemaParser.T__19:
+			case YorkieSchemaParser.T__20:
+			case YorkieSchemaParser.T__21:
+			case YorkieSchemaParser.T__22:
 				this.enterOuterAlt(_localctx, 4);
 				{
-				this.state = 114;
-				this.functionType();
-				}
-				break;
-
-			case 5:
-				this.enterOuterAlt(_localctx, 5);
-				{
-				this.state = 115;
+				this.state = 108;
 				this.yorkieType();
 				}
 				break;
-
-			case 6:
-				this.enterOuterAlt(_localctx, 6);
+			case YorkieSchemaParser.Identifier:
+				this.enterOuterAlt(_localctx, 5);
 				{
-				this.state = 116;
+				this.state = 109;
 				this.typeReference();
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (re) {
@@ -578,7 +568,7 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 119;
+			this.state = 112;
 			_la = this._input.LA(1);
 			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << YorkieSchemaParser.T__9) | (1 << YorkieSchemaParser.T__10) | (1 << YorkieSchemaParser.T__11) | (1 << YorkieSchemaParser.T__12) | (1 << YorkieSchemaParser.T__13) | (1 << YorkieSchemaParser.T__14) | (1 << YorkieSchemaParser.T__15))) !== 0))) {
 			this._errHandler.recoverInline(this);
@@ -614,23 +604,23 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 121;
+			this.state = 114;
 			this.match(YorkieSchemaParser.T__16);
-			this.state = 125;
+			this.state = 118;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
 			while (_la === YorkieSchemaParser.Identifier || _la === YorkieSchemaParser.StringLiteral) {
 				{
 				{
-				this.state = 122;
+				this.state = 115;
 				this.propertySignature();
 				}
 				}
-				this.state = 127;
+				this.state = 120;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 128;
+			this.state = 121;
 			this.match(YorkieSchemaParser.T__17);
 			}
 		}
@@ -655,11 +645,11 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 130;
+			this.state = 123;
 			this.propertyName();
-			this.state = 131;
+			this.state = 124;
 			this.typeAnnotation();
-			this.state = 132;
+			this.state = 125;
 			this.match(YorkieSchemaParser.T__2);
 			}
 		}
@@ -685,7 +675,7 @@ export class YorkieSchemaParser extends Parser {
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 134;
+			this.state = 127;
 			_la = this._input.LA(1);
 			if (!(_la === YorkieSchemaParser.Identifier || _la === YorkieSchemaParser.StringLiteral)) {
 			this._errHandler.recoverInline(this);
@@ -714,136 +704,16 @@ export class YorkieSchemaParser extends Parser {
 		return _localctx;
 	}
 	// @RuleVersion(0)
-	public functionType(): FunctionTypeContext {
-		let _localctx: FunctionTypeContext = new FunctionTypeContext(this._ctx, this.state);
-		this.enterRule(_localctx, 28, YorkieSchemaParser.RULE_functionType);
-		let _la: number;
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 136;
-			this.match(YorkieSchemaParser.T__18);
-			this.state = 138;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			if (_la === YorkieSchemaParser.Identifier) {
-				{
-				this.state = 137;
-				this.parameterList();
-				}
-			}
-
-			this.state = 140;
-			this.match(YorkieSchemaParser.T__19);
-			this.state = 141;
-			this.match(YorkieSchemaParser.T__20);
-			this.state = 142;
-			this.type();
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
-	public parameterList(): ParameterListContext {
-		let _localctx: ParameterListContext = new ParameterListContext(this._ctx, this.state);
-		this.enterRule(_localctx, 30, YorkieSchemaParser.RULE_parameterList);
-		let _la: number;
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 144;
-			this.parameter();
-			this.state = 149;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			while (_la === YorkieSchemaParser.T__21) {
-				{
-				{
-				this.state = 145;
-				this.match(YorkieSchemaParser.T__21);
-				this.state = 146;
-				this.parameter();
-				}
-				}
-				this.state = 151;
-				this._errHandler.sync(this);
-				_la = this._input.LA(1);
-			}
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
-	public parameter(): ParameterContext {
-		let _localctx: ParameterContext = new ParameterContext(this._ctx, this.state);
-		this.enterRule(_localctx, 32, YorkieSchemaParser.RULE_parameter);
-		let _la: number;
-		try {
-			this.enterOuterAlt(_localctx, 1);
-			{
-			this.state = 152;
-			this.match(YorkieSchemaParser.Identifier);
-			this.state = 154;
-			this._errHandler.sync(this);
-			_la = this._input.LA(1);
-			if (_la === YorkieSchemaParser.T__4) {
-				{
-				this.state = 153;
-				this.typeAnnotation();
-				}
-			}
-
-			}
-		}
-		catch (re) {
-			if (re instanceof RecognitionException) {
-				_localctx.exception = re;
-				this._errHandler.reportError(this, re);
-				this._errHandler.recover(this, re);
-			} else {
-				throw re;
-			}
-		}
-		finally {
-			this.exitRule();
-		}
-		return _localctx;
-	}
-	// @RuleVersion(0)
 	public yorkieType(): YorkieTypeContext {
 		let _localctx: YorkieTypeContext = new YorkieTypeContext(this._ctx, this.state);
-		this.enterRule(_localctx, 34, YorkieSchemaParser.RULE_yorkieType);
+		this.enterRule(_localctx, 28, YorkieSchemaParser.RULE_yorkieType);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 156;
+			this.state = 129;
 			_la = this._input.LA(1);
-			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << YorkieSchemaParser.T__22) | (1 << YorkieSchemaParser.T__23) | (1 << YorkieSchemaParser.T__24) | (1 << YorkieSchemaParser.T__25) | (1 << YorkieSchemaParser.T__26))) !== 0))) {
+			if (!((((_la) & ~0x1F) === 0 && ((1 << _la) & ((1 << YorkieSchemaParser.T__18) | (1 << YorkieSchemaParser.T__19) | (1 << YorkieSchemaParser.T__20) | (1 << YorkieSchemaParser.T__21) | (1 << YorkieSchemaParser.T__22))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -872,19 +742,19 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public typeReference(): TypeReferenceContext {
 		let _localctx: TypeReferenceContext = new TypeReferenceContext(this._ctx, this.state);
-		this.enterRule(_localctx, 36, YorkieSchemaParser.RULE_typeReference);
+		this.enterRule(_localctx, 30, YorkieSchemaParser.RULE_typeReference);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 158;
+			this.state = 131;
 			this.match(YorkieSchemaParser.Identifier);
-			this.state = 160;
+			this.state = 133;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === YorkieSchemaParser.T__27) {
+			if (_la === YorkieSchemaParser.T__25) {
 				{
-				this.state = 159;
+				this.state = 132;
 				this.typeArguments();
 				}
 			}
@@ -908,16 +778,16 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public parenthesizedType(): ParenthesizedTypeContext {
 		let _localctx: ParenthesizedTypeContext = new ParenthesizedTypeContext(this._ctx, this.state);
-		this.enterRule(_localctx, 38, YorkieSchemaParser.RULE_parenthesizedType);
+		this.enterRule(_localctx, 32, YorkieSchemaParser.RULE_parenthesizedType);
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 162;
-			this.match(YorkieSchemaParser.T__18);
-			this.state = 163;
+			this.state = 135;
+			this.match(YorkieSchemaParser.T__23);
+			this.state = 136;
 			this.type();
-			this.state = 164;
-			this.match(YorkieSchemaParser.T__19);
+			this.state = 137;
+			this.match(YorkieSchemaParser.T__24);
 			}
 		}
 		catch (re) {
@@ -937,33 +807,33 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public typeParameters(): TypeParametersContext {
 		let _localctx: TypeParametersContext = new TypeParametersContext(this._ctx, this.state);
-		this.enterRule(_localctx, 40, YorkieSchemaParser.RULE_typeParameters);
+		this.enterRule(_localctx, 34, YorkieSchemaParser.RULE_typeParameters);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 166;
-			this.match(YorkieSchemaParser.T__27);
-			this.state = 167;
+			this.state = 139;
+			this.match(YorkieSchemaParser.T__25);
+			this.state = 140;
 			this.typeParameter();
-			this.state = 172;
+			this.state = 145;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === YorkieSchemaParser.T__21) {
+			while (_la === YorkieSchemaParser.T__26) {
 				{
 				{
-				this.state = 168;
-				this.match(YorkieSchemaParser.T__21);
-				this.state = 169;
+				this.state = 141;
+				this.match(YorkieSchemaParser.T__26);
+				this.state = 142;
 				this.typeParameter();
 				}
 				}
-				this.state = 174;
+				this.state = 147;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 175;
-			this.match(YorkieSchemaParser.T__28);
+			this.state = 148;
+			this.match(YorkieSchemaParser.T__27);
 			}
 		}
 		catch (re) {
@@ -983,21 +853,21 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public typeParameter(): TypeParameterContext {
 		let _localctx: TypeParameterContext = new TypeParameterContext(this._ctx, this.state);
-		this.enterRule(_localctx, 42, YorkieSchemaParser.RULE_typeParameter);
+		this.enterRule(_localctx, 36, YorkieSchemaParser.RULE_typeParameter);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 177;
+			this.state = 150;
 			this.match(YorkieSchemaParser.Identifier);
-			this.state = 180;
+			this.state = 153;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			if (_la === YorkieSchemaParser.T__29) {
+			if (_la === YorkieSchemaParser.T__28) {
 				{
-				this.state = 178;
-				this.match(YorkieSchemaParser.T__29);
-				this.state = 179;
+				this.state = 151;
+				this.match(YorkieSchemaParser.T__28);
+				this.state = 152;
 				this.type();
 				}
 			}
@@ -1021,33 +891,33 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public typeArguments(): TypeArgumentsContext {
 		let _localctx: TypeArgumentsContext = new TypeArgumentsContext(this._ctx, this.state);
-		this.enterRule(_localctx, 44, YorkieSchemaParser.RULE_typeArguments);
+		this.enterRule(_localctx, 38, YorkieSchemaParser.RULE_typeArguments);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 182;
-			this.match(YorkieSchemaParser.T__27);
-			this.state = 183;
+			this.state = 155;
+			this.match(YorkieSchemaParser.T__25);
+			this.state = 156;
 			this.type();
-			this.state = 188;
+			this.state = 161;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (_la === YorkieSchemaParser.T__21) {
+			while (_la === YorkieSchemaParser.T__26) {
 				{
 				{
-				this.state = 184;
-				this.match(YorkieSchemaParser.T__21);
-				this.state = 185;
+				this.state = 157;
+				this.match(YorkieSchemaParser.T__26);
+				this.state = 158;
 				this.type();
 				}
 				}
-				this.state = 190;
+				this.state = 163;
 				this._errHandler.sync(this);
 				_la = this._input.LA(1);
 			}
-			this.state = 191;
-			this.match(YorkieSchemaParser.T__28);
+			this.state = 164;
+			this.match(YorkieSchemaParser.T__27);
 			}
 		}
 		catch (re) {
@@ -1067,15 +937,15 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public expression(): ExpressionContext {
 		let _localctx: ExpressionContext = new ExpressionContext(this._ctx, this.state);
-		this.enterRule(_localctx, 46, YorkieSchemaParser.RULE_expression);
+		this.enterRule(_localctx, 40, YorkieSchemaParser.RULE_expression);
 		try {
-			this.state = 195;
+			this.state = 168;
 			this._errHandler.sync(this);
 			switch (this._input.LA(1)) {
 			case YorkieSchemaParser.Identifier:
 				this.enterOuterAlt(_localctx, 1);
 				{
-				this.state = 193;
+				this.state = 166;
 				this.match(YorkieSchemaParser.Identifier);
 				}
 				break;
@@ -1084,7 +954,7 @@ export class YorkieSchemaParser extends Parser {
 			case YorkieSchemaParser.BooleanLiteral:
 				this.enterOuterAlt(_localctx, 2);
 				{
-				this.state = 194;
+				this.state = 167;
 				this.literal();
 				}
 				break;
@@ -1109,14 +979,14 @@ export class YorkieSchemaParser extends Parser {
 	// @RuleVersion(0)
 	public literal(): LiteralContext {
 		let _localctx: LiteralContext = new LiteralContext(this._ctx, this.state);
-		this.enterRule(_localctx, 48, YorkieSchemaParser.RULE_literal);
+		this.enterRule(_localctx, 42, YorkieSchemaParser.RULE_literal);
 		let _la: number;
 		try {
 			this.enterOuterAlt(_localctx, 1);
 			{
-			this.state = 197;
+			this.state = 170;
 			_la = this._input.LA(1);
-			if (!(((((_la - 32)) & ~0x1F) === 0 && ((1 << (_la - 32)) & ((1 << (YorkieSchemaParser.StringLiteral - 32)) | (1 << (YorkieSchemaParser.NumberLiteral - 32)) | (1 << (YorkieSchemaParser.BooleanLiteral - 32)))) !== 0))) {
+			if (!(((((_la - 31)) & ~0x1F) === 0 && ((1 << (_la - 31)) & ((1 << (YorkieSchemaParser.StringLiteral - 31)) | (1 << (YorkieSchemaParser.NumberLiteral - 31)) | (1 << (YorkieSchemaParser.BooleanLiteral - 31)))) !== 0))) {
 			this._errHandler.recoverInline(this);
 			} else {
 				if (this._input.LA(1) === Token.EOF) {
@@ -1144,89 +1014,76 @@ export class YorkieSchemaParser extends Parser {
 	}
 
 	public static readonly _serializedATN: string =
-		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03%\xCA\x04\x02" +
+		"\x03\uC91D\uCABA\u058D\uAFBA\u4F53\u0607\uEA8B\uC241\x03&\xAF\x04\x02" +
 		"\t\x02\x04\x03\t\x03\x04\x04\t\x04\x04\x05\t\x05\x04\x06\t\x06\x04\x07" +
 		"\t\x07\x04\b\t\b\x04\t\t\t\x04\n\t\n\x04\v\t\v\x04\f\t\f\x04\r\t\r\x04" +
 		"\x0E\t\x0E\x04\x0F\t\x0F\x04\x10\t\x10\x04\x11\t\x11\x04\x12\t\x12\x04" +
-		"\x13\t\x13\x04\x14\t\x14\x04\x15\t\x15\x04\x16\t\x16\x04\x17\t\x17\x04" +
-		"\x18\t\x18\x04\x19\t\x19\x04\x1A\t\x1A\x03\x02\x07\x026\n\x02\f\x02\x0E" +
-		"\x029\v\x02\x03\x02\x03\x02\x03\x03\x03\x03\x05\x03?\n\x03\x03\x04\x03" +
-		"\x04\x03\x04\x05\x04D\n\x04\x03\x04\x03\x04\x03\x04\x03\x04\x03\x05\x03" +
-		"\x05\x03\x05\x05\x05M\n\x05\x03\x05\x03\x05\x05\x05Q\n\x05\x03\x05\x03" +
-		"\x05\x03\x06\x03\x06\x03\x06\x03\x07\x03\x07\x03\b\x03\b\x03\b\x07\b]" +
-		"\n\b\f\b\x0E\b`\v\b\x03\t\x03\t\x03\t\x07\te\n\t\f\t\x0E\th\v\t\x03\n" +
-		"\x03\n\x03\n\x07\nm\n\n\f\n\x0E\np\v\n\x03\v\x03\v\x03\v\x03\v\x03\v\x03" +
-		"\v\x05\vx\n\v\x03\f\x03\f\x03\r\x03\r\x07\r~\n\r\f\r\x0E\r\x81\v\r\x03" +
-		"\r\x03\r\x03\x0E\x03\x0E\x03\x0E\x03\x0E\x03\x0F\x03\x0F\x03\x10\x03\x10" +
-		"\x05\x10\x8D\n\x10\x03\x10\x03\x10\x03\x10\x03\x10\x03\x11\x03\x11\x03" +
-		"\x11\x07\x11\x96\n\x11\f\x11\x0E\x11\x99\v\x11\x03\x12\x03\x12\x05\x12" +
-		"\x9D\n\x12\x03\x13\x03\x13\x03\x14\x03\x14\x05\x14\xA3\n\x14\x03\x15\x03" +
-		"\x15\x03\x15\x03\x15\x03\x16\x03\x16\x03\x16\x03\x16\x07\x16\xAD\n\x16" +
-		"\f\x16\x0E\x16\xB0\v\x16\x03\x16\x03\x16\x03\x17\x03\x17\x03\x17\x05\x17" +
-		"\xB7\n\x17\x03\x18\x03\x18\x03\x18\x03\x18\x07\x18\xBD\n\x18\f\x18\x0E" +
-		"\x18\xC0\v\x18\x03\x18\x03\x18\x03\x19\x03\x19\x05\x19\xC6\n\x19\x03\x1A" +
-		"\x03\x1A\x03\x1A\x02\x02\x02\x1B\x02\x02\x04\x02\x06\x02\b\x02\n\x02\f" +
-		"\x02\x0E\x02\x10\x02\x12\x02\x14\x02\x16\x02\x18\x02\x1A\x02\x1C\x02\x1E" +
-		"\x02 \x02\"\x02$\x02&\x02(\x02*\x02,\x02.\x020\x022\x02\x02\x06\x03\x02" +
-		"\f\x12\x03\x02!\"\x03\x02\x19\x1D\x03\x02\"$\x02\xC6\x027\x03\x02\x02" +
-		"\x02\x04>\x03\x02\x02\x02\x06@\x03\x02\x02\x02\bI\x03\x02\x02\x02\nT\x03" +
-		"\x02\x02\x02\fW\x03\x02\x02\x02\x0EY\x03\x02\x02\x02\x10a\x03\x02\x02" +
-		"\x02\x12i\x03\x02\x02\x02\x14w\x03\x02\x02\x02\x16y\x03\x02\x02\x02\x18" +
-		"{\x03\x02\x02\x02\x1A\x84\x03\x02\x02\x02\x1C\x88\x03\x02\x02\x02\x1E" +
-		"\x8A\x03\x02\x02\x02 \x92\x03\x02\x02\x02\"\x9A\x03\x02\x02\x02$\x9E\x03" +
-		"\x02\x02\x02&\xA0\x03\x02\x02\x02(\xA4\x03\x02\x02\x02*\xA8\x03\x02\x02" +
-		"\x02,\xB3\x03\x02\x02\x02.\xB8\x03\x02\x02\x020\xC5\x03\x02\x02\x022\xC7" +
-		"\x03\x02\x02\x0246\x05\x04\x03\x0254\x03\x02\x02\x0269\x03\x02\x02\x02" +
-		"75\x03\x02\x02\x0278\x03\x02\x02\x028:\x03\x02\x02\x0297\x03\x02\x02\x02" +
-		":;\x07\x02\x02\x03;\x03\x03\x02\x02\x02<?\x05\x06\x04\x02=?\x05\b\x05" +
-		"\x02><\x03\x02\x02\x02>=\x03\x02\x02\x02?\x05\x03\x02\x02\x02@A\x07\x03" +
-		"\x02\x02AC\x07!\x02\x02BD\x05*\x16\x02CB\x03\x02\x02\x02CD\x03\x02\x02" +
-		"\x02DE\x03\x02\x02\x02EF\x07\x04\x02\x02FG\x05\f\x07\x02GH\x07\x05\x02" +
-		"\x02H\x07\x03\x02\x02\x02IJ\x07\x06\x02\x02JL\x07!\x02\x02KM\x05\n\x06" +
-		"\x02LK\x03\x02\x02\x02LM\x03\x02\x02\x02MP\x03\x02\x02\x02NO\x07\x04\x02" +
-		"\x02OQ\x050\x19\x02PN\x03\x02\x02\x02PQ\x03\x02\x02\x02QR\x03\x02\x02" +
-		"\x02RS\x07\x05\x02\x02S\t\x03\x02\x02\x02TU\x07\x07\x02\x02UV\x05\f\x07" +
-		"\x02V\v\x03\x02\x02\x02WX\x05\x0E\b\x02X\r\x03\x02\x02\x02Y^\x05\x10\t" +
-		"\x02Z[\x07\b\x02\x02[]\x05\x10\t\x02\\Z\x03\x02\x02\x02]`\x03\x02\x02" +
-		"\x02^\\\x03\x02\x02\x02^_\x03\x02\x02\x02_\x0F\x03\x02\x02\x02`^\x03\x02" +
-		"\x02\x02af\x05\x12\n\x02bc\x07\t\x02\x02ce\x05\x12\n\x02db\x03\x02\x02" +
-		"\x02eh\x03\x02\x02\x02fd\x03\x02\x02\x02fg\x03\x02\x02\x02g\x11\x03\x02" +
-		"\x02\x02hf\x03\x02\x02\x02in\x05\x14\v\x02jk\x07\n\x02\x02km\x07\v\x02" +
-		"\x02lj\x03\x02\x02\x02mp\x03\x02\x02\x02nl\x03\x02\x02\x02no\x03\x02\x02" +
-		"\x02o\x13\x03\x02\x02\x02pn\x03\x02\x02\x02qx\x05(\x15\x02rx\x05\x16\f" +
-		"\x02sx\x05\x18\r\x02tx\x05\x1E\x10\x02ux\x05$\x13\x02vx\x05&\x14\x02w" +
-		"q\x03\x02\x02\x02wr\x03\x02\x02\x02ws\x03\x02\x02\x02wt\x03\x02\x02\x02" +
-		"wu\x03\x02\x02\x02wv\x03\x02\x02\x02x\x15\x03\x02\x02\x02yz\t\x02\x02" +
-		"\x02z\x17\x03\x02\x02\x02{\x7F\x07\x13\x02\x02|~\x05\x1A\x0E\x02}|\x03" +
-		"\x02\x02\x02~\x81\x03\x02\x02\x02\x7F}\x03\x02\x02\x02\x7F\x80\x03\x02" +
-		"\x02\x02\x80\x82\x03\x02\x02\x02\x81\x7F\x03\x02\x02\x02\x82\x83\x07\x14" +
-		"\x02\x02\x83\x19\x03\x02\x02\x02\x84\x85\x05\x1C\x0F\x02\x85\x86\x05\n" +
-		"\x06\x02\x86\x87\x07\x05\x02\x02\x87\x1B\x03\x02\x02\x02\x88\x89\t\x03" +
-		"\x02\x02\x89\x1D\x03\x02\x02\x02\x8A\x8C\x07\x15\x02\x02\x8B\x8D\x05 " +
-		"\x11\x02\x8C\x8B\x03\x02\x02\x02\x8C\x8D\x03\x02\x02\x02\x8D\x8E\x03\x02" +
-		"\x02\x02\x8E\x8F\x07\x16\x02\x02\x8F\x90\x07\x17\x02\x02\x90\x91\x05\f" +
-		"\x07\x02\x91\x1F\x03\x02\x02\x02\x92\x97\x05\"\x12\x02\x93\x94\x07\x18" +
-		"\x02\x02\x94\x96\x05\"\x12\x02\x95\x93\x03\x02\x02\x02\x96\x99\x03\x02" +
-		"\x02\x02\x97\x95\x03\x02\x02\x02\x97\x98\x03\x02\x02\x02\x98!\x03\x02" +
-		"\x02\x02\x99\x97\x03\x02\x02\x02\x9A\x9C\x07!\x02\x02\x9B\x9D\x05\n\x06" +
-		"\x02\x9C\x9B\x03\x02\x02\x02\x9C\x9D\x03\x02\x02\x02\x9D#\x03\x02\x02" +
-		"\x02\x9E\x9F\t\x04\x02\x02\x9F%\x03\x02\x02\x02\xA0\xA2\x07!\x02\x02\xA1" +
-		"\xA3\x05.\x18\x02\xA2\xA1\x03\x02\x02\x02\xA2\xA3\x03\x02\x02\x02\xA3" +
-		"\'\x03\x02\x02\x02\xA4\xA5\x07\x15\x02\x02\xA5\xA6\x05\f\x07\x02\xA6\xA7" +
-		"\x07\x16\x02\x02\xA7)\x03\x02\x02\x02\xA8\xA9\x07\x1E\x02\x02\xA9\xAE" +
-		"\x05,\x17\x02\xAA\xAB\x07\x18\x02\x02\xAB\xAD\x05,\x17\x02\xAC\xAA\x03" +
-		"\x02\x02\x02\xAD\xB0\x03\x02\x02\x02\xAE\xAC\x03\x02\x02\x02\xAE\xAF\x03" +
-		"\x02\x02\x02\xAF\xB1\x03\x02\x02\x02\xB0\xAE\x03\x02\x02\x02\xB1\xB2\x07" +
-		"\x1F\x02\x02\xB2+\x03\x02\x02\x02\xB3\xB6\x07!\x02\x02\xB4\xB5\x07 \x02" +
-		"\x02\xB5\xB7\x05\f\x07\x02\xB6\xB4\x03\x02\x02\x02\xB6\xB7\x03\x02\x02" +
-		"\x02\xB7-\x03\x02\x02\x02\xB8\xB9\x07\x1E\x02\x02\xB9\xBE\x05\f\x07\x02" +
-		"\xBA\xBB\x07\x18\x02\x02\xBB\xBD\x05\f\x07\x02\xBC\xBA\x03\x02\x02\x02" +
-		"\xBD\xC0\x03\x02\x02\x02\xBE\xBC\x03\x02\x02\x02\xBE\xBF\x03\x02\x02\x02" +
-		"\xBF\xC1\x03\x02\x02\x02\xC0\xBE\x03\x02\x02\x02\xC1\xC2\x07\x1F\x02\x02" +
-		"\xC2/\x03\x02\x02\x02\xC3\xC6\x07!\x02\x02\xC4\xC6\x052\x1A\x02\xC5\xC3" +
-		"\x03\x02\x02\x02\xC5\xC4\x03\x02\x02\x02\xC61\x03\x02\x02\x02\xC7\xC8" +
-		"\t\x05\x02\x02\xC83\x03\x02\x02\x02\x147>CLP^fnw\x7F\x8C\x97\x9C\xA2\xAE" +
-		"\xB6\xBE\xC5";
+		"\x13\t\x13\x04\x14\t\x14\x04\x15\t\x15\x04\x16\t\x16\x04\x17\t\x17\x03" +
+		"\x02\x07\x020\n\x02\f\x02\x0E\x023\v\x02\x03\x02\x03\x02\x03\x03\x03\x03" +
+		"\x05\x039\n\x03\x03\x04\x03\x04\x03\x04\x05\x04>\n\x04\x03\x04\x03\x04" +
+		"\x03\x04\x03\x04\x03\x05\x03\x05\x03\x05\x05\x05G\n\x05\x03\x05\x03\x05" +
+		"\x05\x05K\n\x05\x03\x05\x03\x05\x03\x06\x03\x06\x03\x06\x03\x07\x03\x07" +
+		"\x03\b\x03\b\x03\b\x07\bW\n\b\f\b\x0E\bZ\v\b\x03\t\x03\t\x03\t\x07\t_" +
+		"\n\t\f\t\x0E\tb\v\t\x03\n\x03\n\x03\n\x07\ng\n\n\f\n\x0E\nj\v\n\x03\v" +
+		"\x03\v\x03\v\x03\v\x03\v\x05\vq\n\v\x03\f\x03\f\x03\r\x03\r\x07\rw\n\r" +
+		"\f\r\x0E\rz\v\r\x03\r\x03\r\x03\x0E\x03\x0E\x03\x0E\x03\x0E\x03\x0F\x03" +
+		"\x0F\x03\x10\x03\x10\x03\x11\x03\x11\x05\x11\x88\n\x11\x03\x12\x03\x12" +
+		"\x03\x12\x03\x12\x03\x13\x03\x13\x03\x13\x03\x13\x07\x13\x92\n\x13\f\x13" +
+		"\x0E\x13\x95\v\x13\x03\x13\x03\x13\x03\x14\x03\x14\x03\x14\x05\x14\x9C" +
+		"\n\x14\x03\x15\x03\x15\x03\x15\x03\x15\x07\x15\xA2\n\x15\f\x15\x0E\x15" +
+		"\xA5\v\x15\x03\x15\x03\x15\x03\x16\x03\x16\x05\x16\xAB\n\x16\x03\x17\x03" +
+		"\x17\x03\x17\x02\x02\x02\x18\x02\x02\x04\x02\x06\x02\b\x02\n\x02\f\x02" +
+		"\x0E\x02\x10\x02\x12\x02\x14\x02\x16\x02\x18\x02\x1A\x02\x1C\x02\x1E\x02" +
+		" \x02\"\x02$\x02&\x02(\x02*\x02,\x02\x02\x06\x03\x02\f\x12\x03\x02 !\x03" +
+		"\x02\x15\x19\x03\x02!#\x02\xAA\x021\x03\x02\x02\x02\x048\x03\x02\x02\x02" +
+		"\x06:\x03\x02\x02\x02\bC\x03\x02\x02\x02\nN\x03\x02\x02\x02\fQ\x03\x02" +
+		"\x02\x02\x0ES\x03\x02\x02\x02\x10[\x03\x02\x02\x02\x12c\x03\x02\x02\x02" +
+		"\x14p\x03\x02\x02\x02\x16r\x03\x02\x02\x02\x18t\x03\x02\x02\x02\x1A}\x03" +
+		"\x02\x02\x02\x1C\x81\x03\x02\x02\x02\x1E\x83\x03\x02\x02\x02 \x85\x03" +
+		"\x02\x02\x02\"\x89\x03\x02\x02\x02$\x8D\x03\x02\x02\x02&\x98\x03\x02\x02" +
+		"\x02(\x9D\x03\x02\x02\x02*\xAA\x03\x02\x02\x02,\xAC\x03\x02\x02\x02.0" +
+		"\x05\x04\x03\x02/.\x03\x02\x02\x0203\x03\x02\x02\x021/\x03\x02\x02\x02" +
+		"12\x03\x02\x02\x0224\x03\x02\x02\x0231\x03\x02\x02\x0245\x07\x02\x02\x03" +
+		"5\x03\x03\x02\x02\x0269\x05\x06\x04\x0279\x05\b\x05\x0286\x03\x02\x02" +
+		"\x0287\x03\x02\x02\x029\x05\x03\x02\x02\x02:;\x07\x03\x02\x02;=\x07 \x02" +
+		"\x02<>\x05$\x13\x02=<\x03\x02\x02\x02=>\x03\x02\x02\x02>?\x03\x02\x02" +
+		"\x02?@\x07\x04\x02\x02@A\x05\f\x07\x02AB\x07\x05\x02\x02B\x07\x03\x02" +
+		"\x02\x02CD\x07\x06\x02\x02DF\x07 \x02\x02EG\x05\n\x06\x02FE\x03\x02\x02" +
+		"\x02FG\x03\x02\x02\x02GJ\x03\x02\x02\x02HI\x07\x04\x02\x02IK\x05*\x16" +
+		"\x02JH\x03\x02\x02\x02JK\x03\x02\x02\x02KL\x03\x02\x02\x02LM\x07\x05\x02" +
+		"\x02M\t\x03\x02\x02\x02NO\x07\x07\x02\x02OP\x05\f\x07\x02P\v\x03\x02\x02" +
+		"\x02QR\x05\x0E\b\x02R\r\x03\x02\x02\x02SX\x05\x10\t\x02TU\x07\b\x02\x02" +
+		"UW\x05\x10\t\x02VT\x03\x02\x02\x02WZ\x03\x02\x02\x02XV\x03\x02\x02\x02" +
+		"XY\x03\x02\x02\x02Y\x0F\x03\x02\x02\x02ZX\x03\x02\x02\x02[`\x05\x12\n" +
+		"\x02\\]\x07\t\x02\x02]_\x05\x12\n\x02^\\\x03\x02\x02\x02_b\x03\x02\x02" +
+		"\x02`^\x03\x02\x02\x02`a\x03\x02\x02\x02a\x11\x03\x02\x02\x02b`\x03\x02" +
+		"\x02\x02ch\x05\x14\v\x02de\x07\n\x02\x02eg\x07\v\x02\x02fd\x03\x02\x02" +
+		"\x02gj\x03\x02\x02\x02hf\x03\x02\x02\x02hi\x03\x02\x02\x02i\x13\x03\x02" +
+		"\x02\x02jh\x03\x02\x02\x02kq\x05\"\x12\x02lq\x05\x16\f\x02mq\x05\x18\r" +
+		"\x02nq\x05\x1E\x10\x02oq\x05 \x11\x02pk\x03\x02\x02\x02pl\x03\x02\x02" +
+		"\x02pm\x03\x02\x02\x02pn\x03\x02\x02\x02po\x03\x02\x02\x02q\x15\x03\x02" +
+		"\x02\x02rs\t\x02\x02\x02s\x17\x03\x02\x02\x02tx\x07\x13\x02\x02uw\x05" +
+		"\x1A\x0E\x02vu\x03\x02\x02\x02wz\x03\x02\x02\x02xv\x03\x02\x02\x02xy\x03" +
+		"\x02\x02\x02y{\x03\x02\x02\x02zx\x03\x02\x02\x02{|\x07\x14\x02\x02|\x19" +
+		"\x03\x02\x02\x02}~\x05\x1C\x0F\x02~\x7F\x05\n\x06\x02\x7F\x80\x07\x05" +
+		"\x02\x02\x80\x1B\x03\x02\x02\x02\x81\x82\t\x03\x02\x02\x82\x1D\x03\x02" +
+		"\x02\x02\x83\x84\t\x04\x02\x02\x84\x1F\x03\x02\x02\x02\x85\x87\x07 \x02" +
+		"\x02\x86\x88\x05(\x15\x02\x87\x86\x03\x02\x02\x02\x87\x88\x03\x02\x02" +
+		"\x02\x88!\x03\x02\x02\x02\x89\x8A\x07\x1A\x02\x02\x8A\x8B\x05\f\x07\x02" +
+		"\x8B\x8C\x07\x1B\x02\x02\x8C#\x03\x02\x02\x02\x8D\x8E\x07\x1C\x02\x02" +
+		"\x8E\x93\x05&\x14\x02\x8F\x90\x07\x1D\x02\x02\x90\x92\x05&\x14\x02\x91" +
+		"\x8F\x03\x02\x02\x02\x92\x95\x03\x02\x02\x02\x93\x91\x03\x02\x02\x02\x93" +
+		"\x94\x03\x02\x02\x02\x94\x96\x03\x02\x02\x02\x95\x93\x03\x02\x02\x02\x96" +
+		"\x97\x07\x1E\x02\x02\x97%\x03\x02\x02\x02\x98\x9B\x07 \x02\x02\x99\x9A" +
+		"\x07\x1F\x02\x02\x9A\x9C\x05\f\x07\x02\x9B\x99\x03\x02\x02\x02\x9B\x9C" +
+		"\x03\x02\x02\x02\x9C\'\x03\x02\x02\x02\x9D\x9E\x07\x1C\x02\x02\x9E\xA3" +
+		"\x05\f\x07\x02\x9F\xA0\x07\x1D\x02\x02\xA0\xA2\x05\f\x07\x02\xA1\x9F\x03" +
+		"\x02\x02\x02\xA2\xA5\x03\x02\x02\x02\xA3\xA1\x03\x02\x02\x02\xA3\xA4\x03" +
+		"\x02\x02\x02\xA4\xA6\x03\x02\x02\x02\xA5\xA3\x03\x02\x02\x02\xA6\xA7\x07" +
+		"\x1E\x02\x02\xA7)\x03\x02\x02\x02\xA8\xAB\x07 \x02\x02\xA9\xAB\x05,\x17" +
+		"\x02\xAA\xA8\x03\x02\x02\x02\xAA\xA9\x03\x02\x02\x02\xAB+\x03\x02\x02" +
+		"\x02\xAC\xAD\t\x05\x02\x02\xAD-\x03\x02\x02\x02\x1118=FJX`hpx\x87\x93" +
+		"\x9B\xA3\xAA";
 	public static __ATN: ATN;
 	public static get _ATN(): ATN {
 		if (!YorkieSchemaParser.__ATN) {
@@ -1566,9 +1423,6 @@ export class PrimaryTypeContext extends ParserRuleContext {
 	public objectType(): ObjectTypeContext | undefined {
 		return this.tryGetRuleContext(0, ObjectTypeContext);
 	}
-	public functionType(): FunctionTypeContext | undefined {
-		return this.tryGetRuleContext(0, FunctionTypeContext);
-	}
 	public yorkieType(): YorkieTypeContext | undefined {
 		return this.tryGetRuleContext(0, YorkieTypeContext);
 	}
@@ -1729,112 +1583,6 @@ export class PropertyNameContext extends ParserRuleContext {
 	public accept<Result>(visitor: YorkieSchemaVisitor<Result>): Result {
 		if (visitor.visitPropertyName) {
 			return visitor.visitPropertyName(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class FunctionTypeContext extends ParserRuleContext {
-	public type(): TypeContext {
-		return this.getRuleContext(0, TypeContext);
-	}
-	public parameterList(): ParameterListContext | undefined {
-		return this.tryGetRuleContext(0, ParameterListContext);
-	}
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return YorkieSchemaParser.RULE_functionType; }
-	// @Override
-	public enterRule(listener: YorkieSchemaListener): void {
-		if (listener.enterFunctionType) {
-			listener.enterFunctionType(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: YorkieSchemaListener): void {
-		if (listener.exitFunctionType) {
-			listener.exitFunctionType(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: YorkieSchemaVisitor<Result>): Result {
-		if (visitor.visitFunctionType) {
-			return visitor.visitFunctionType(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class ParameterListContext extends ParserRuleContext {
-	public parameter(): ParameterContext[];
-	public parameter(i: number): ParameterContext;
-	public parameter(i?: number): ParameterContext | ParameterContext[] {
-		if (i === undefined) {
-			return this.getRuleContexts(ParameterContext);
-		} else {
-			return this.getRuleContext(i, ParameterContext);
-		}
-	}
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return YorkieSchemaParser.RULE_parameterList; }
-	// @Override
-	public enterRule(listener: YorkieSchemaListener): void {
-		if (listener.enterParameterList) {
-			listener.enterParameterList(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: YorkieSchemaListener): void {
-		if (listener.exitParameterList) {
-			listener.exitParameterList(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: YorkieSchemaVisitor<Result>): Result {
-		if (visitor.visitParameterList) {
-			return visitor.visitParameterList(this);
-		} else {
-			return visitor.visitChildren(this);
-		}
-	}
-}
-
-
-export class ParameterContext extends ParserRuleContext {
-	public Identifier(): TerminalNode { return this.getToken(YorkieSchemaParser.Identifier, 0); }
-	public typeAnnotation(): TypeAnnotationContext | undefined {
-		return this.tryGetRuleContext(0, TypeAnnotationContext);
-	}
-	constructor(parent: ParserRuleContext | undefined, invokingState: number) {
-		super(parent, invokingState);
-	}
-	// @Override
-	public get ruleIndex(): number { return YorkieSchemaParser.RULE_parameter; }
-	// @Override
-	public enterRule(listener: YorkieSchemaListener): void {
-		if (listener.enterParameter) {
-			listener.enterParameter(this);
-		}
-	}
-	// @Override
-	public exitRule(listener: YorkieSchemaListener): void {
-		if (listener.exitParameter) {
-			listener.exitParameter(this);
-		}
-	}
-	// @Override
-	public accept<Result>(visitor: YorkieSchemaVisitor<Result>): Result {
-		if (visitor.visitParameter) {
-			return visitor.visitParameter(this);
 		} else {
 			return visitor.visitChildren(this);
 		}

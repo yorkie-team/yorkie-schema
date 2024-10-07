@@ -17,9 +17,6 @@ import { PrimitiveTypeContext } from "./YorkieSchemaParser";
 import { ObjectTypeContext } from "./YorkieSchemaParser";
 import { PropertySignatureContext } from "./YorkieSchemaParser";
 import { PropertyNameContext } from "./YorkieSchemaParser";
-import { FunctionTypeContext } from "./YorkieSchemaParser";
-import { ParameterListContext } from "./YorkieSchemaParser";
-import { ParameterContext } from "./YorkieSchemaParser";
 import { YorkieTypeContext } from "./YorkieSchemaParser";
 import { TypeReferenceContext } from "./YorkieSchemaParser";
 import { ParenthesizedTypeContext } from "./YorkieSchemaParser";
@@ -135,27 +132,6 @@ export interface YorkieSchemaVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitPropertyName?: (ctx: PropertyNameContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `YorkieSchemaParser.functionType`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitFunctionType?: (ctx: FunctionTypeContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `YorkieSchemaParser.parameterList`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitParameterList?: (ctx: ParameterListContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `YorkieSchemaParser.parameter`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitParameter?: (ctx: ParameterContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `YorkieSchemaParser.yorkieType`.

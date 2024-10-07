@@ -20,20 +20,20 @@ const yorkieLinter = linter((view) => {
 
 new EditorView({
   state: EditorState.create({
-    doc: `# 🐾 Yorkie Schema Example
+    doc: `// 🐾 Yorkie Schema Example
 
-# This is the root of your document
-# Every schema must define a Document type
-type Document {
-  theme: "light" | "dark";
+// This is the root of your document
+// Every schema must define a Document type
+type Document = {
+  // theme: "light" | "dark";
   history: Event[];
   text: yorkie.Text;
-}
+};
 
-type Event {
+type Event = {
   statusCode: 200 | 400;
   info: string;
-}
+};
       `,
     extensions: [basicSetup, yorkieLinter, lintGutter()],
   }),
