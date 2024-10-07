@@ -1,24 +1,48 @@
-import './style.css';
-import typescriptLogo from './typescript.svg';
-import viteLogo from '/vite.svg';
-import { setupCounter } from './counter.ts';
+import { EditorState } from "@codemirror/state";
+import { linter, lintGutter, Diagnostic } from "@codemirror/lint";
+import { EditorView } from "@codemirror/view";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`;
+const yorkieLinter = linter((view) => {
+  const diagnostics: Diagnostic[] = [];
+  const code = view.state.doc.toString();
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
+  // Sample linter
+  const forbiddenWord = "forbidden";
+  let index = code.indexOf(forbiddenWord);
+  while (index !== -1) {
+    diagnostics.push({
+      from: index,
+      to: index + forbiddenWord.length,
+      severity: "error",
+      message: `'${forbiddenWord}' is a forbidden word`,
+    });
+    index = code.indexOf(forbiddenWord, index + 1);
+  }
+
+  code.split("\n").forEach((line, i) => {
+    if (line.length > 45) {
+      diagnostics.push({
+        from: view.state.doc.line(i + 1).from,
+        to: view.state.doc.line(i + 1).to,
+        severity: "warning",
+        message: "line is too long (> 45 characters)",
+      });
+    }
+  });
+
+  return diagnostics;
+});
+
+new EditorView({
+  state: EditorState.create({
+    doc:
+      "// Custom Linter Example\n" +
+      "function example() {\n" +
+      "  console.log('This is a test');\n" +
+      "  let forbidden = 'This word is not allowed';\n" +
+      "  return 'This line is too long and will trigger a warning';\n" +
+      "}",
+    extensions: [yorkieLinter, lintGutter()],
+  }),
+  parent: document.getElementById("editor")!,
+});
