@@ -5,6 +5,7 @@ import {
   Recognizer,
   Token,
   CommonToken,
+  RecognitionException,
 } from 'antlr4ts';
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { YorkieSchemaLexer } from '../antlr/YorkieSchemaLexer';
@@ -47,15 +48,40 @@ class Visitor implements YorkieSchemaVisitor<Node> {
   }
 }
 
+class LexerErrorListener implements ANTLRErrorListener<number> {
+  constructor(private errorList: Diagnostic[]) {}
+
+  syntaxError<T extends number>(
+    _recognizer: Recognizer<T, any>,
+    _offendingSymbol: T | undefined,
+    line: number,
+    charPositionInLine: number,
+    msg: string,
+    _e: RecognitionException | undefined,
+  ): void {
+    let error: Diagnostic = {
+      severity: 'error',
+      message: msg,
+      range: {
+        start: { column: charPositionInLine, line },
+        end: { column: charPositionInLine + 1, line },
+      },
+    };
+
+    this.errorList.push(error);
+  }
+}
+
 class ParserErrorListener implements ANTLRErrorListener<CommonToken> {
   constructor(private errorList: Diagnostic[]) {}
 
   syntaxError<T extends Token>(
-    _: Recognizer<T, any>,
+    _recognizer: Recognizer<T, any>,
     offendingSymbol: T | undefined,
     line: number,
     charPositionInLine: number,
     msg: string,
+    _e: RecognitionException | undefined,
   ): void {
     const error: Diagnostic = {
       severity: 'error',
@@ -94,9 +120,8 @@ export function getDiagnostics(data: string): Diagnostic[] {
 
   const stream = CharStreams.fromString(data);
   const lexer = new YorkieSchemaLexer(stream);
-  // TODO(hackerwins): Add error listener to lexer.
-  // lexer.removeErrorListeners();
-  // lexer.addErrorListener(new LexerErrorListener(diagnostics));
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(new LexerErrorListener(diagnostics));
 
   const tokens = new CommonTokenStream(lexer);
   const parser = new YorkieSchemaParser(tokens);
