@@ -81,6 +81,8 @@ class Visitor implements SchemaVisitor<Node> {
   }
 }
 
+
+
 export function validate(data: string): boolean {
   try {
     const stream = CharStreams.fromString(data);
@@ -92,8 +94,11 @@ export function validate(data: string): boolean {
     visitor.visit(ast);
     return true;
   } catch (error) {
-    const err = error as Error;
-    console.error(err.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error(String(error));
+    }
     return false;
   }
 }
