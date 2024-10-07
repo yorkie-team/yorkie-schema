@@ -1,7 +1,7 @@
-import { CharStreams, CommonTokenStream } from "antlr4ts";
-import { ParseTree } from "antlr4ts/tree/ParseTree";
-import { SchemaLexer } from "../antlr/SchemaLexer";
-import { SchemaVisitor } from "../antlr/SchemaVisitor";
+import { CharStreams, CommonTokenStream } from 'antlr4ts';
+import { ParseTree } from 'antlr4ts/tree/ParseTree';
+import { SchemaLexer } from '../antlr/SchemaLexer';
+import { SchemaVisitor } from '../antlr/SchemaVisitor';
 import {
   DocumentContext,
   DefinitionListContext,
@@ -71,11 +71,12 @@ class Visitor implements SchemaVisitor<Node> {
       const child = node.getChild(i);
       this.visit(child);
     }
-    return new Node("children");
+    return new Node('children');
   }
   visitTerminal(node: TerminalNode): Node {
     return new Node(node.text);
   }
+
   visitErrorNode(node: ErrorNode): Node {
     throw new Error(`Syntax error at: ${node.text}`);
   }

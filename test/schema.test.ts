@@ -1,5 +1,6 @@
-import { describe, it, assert } from "vitest";
-import { validate } from "../src/validator";
+import { describe, it, assert } from 'vitest';
+import { validate } from '../src/validator';
+
 
 describe("Use Grammar Similar to TypeScript", () => {
   it("value restriction with literal types", () => {
@@ -228,6 +229,7 @@ describe("User Defined Types", () => {
       };
     `;
     assert.isTrue(validate(schema));
+
   });
 });
 
