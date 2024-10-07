@@ -1,22 +1,8 @@
 import { CharStreams, CommonTokenStream } from 'antlr4ts';
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
-import { SchemaLexer } from '../antlr/SchemaLexer';
-import { SchemaVisitor } from '../antlr/SchemaVisitor';
-import {
-  ArraySuffixContext,
-  FieldContext,
-  FieldListContext,
-  FieldTypeContext,
-  PrimitiveTypeContext,
-  SchemaParser,
-  SimpleTypeContext,
-  StartContext,
-  TypeDefinitionContext,
-  TypeDefinitionsContext,
-  TypeExpressionContext,
-  UnionTypeContext,
-  UnionTypeInnerContext,
-} from '../antlr/SchemaParser';
+import { YorkieSchemaLexer } from '../antlr/YorkieSchemaLexer';
+import { YorkieSchemaVisitor } from '../antlr/YorkieSchemaVisitor';
+import { YorkieSchemaParser } from '../antlr/YorkieSchemaParser';
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
@@ -25,19 +11,7 @@ class Node {
   constructor(public name: string) {}
 }
 
-class Visitor implements SchemaVisitor<Node> {
-  visitStart?: ((ctx: StartContext) => Node) | undefined;
-  visitTypeDefinitions?: ((ctx: TypeDefinitionsContext) => Node) | undefined;
-  visitTypeDefinition?: ((ctx: TypeDefinitionContext) => Node) | undefined;
-  visitFieldList?: ((ctx: FieldListContext) => Node) | undefined;
-  visitField?: ((ctx: FieldContext) => Node) | undefined;
-  visitFieldType?: ((ctx: FieldTypeContext) => Node) | undefined;
-  visitTypeExpression?: ((ctx: TypeExpressionContext) => Node) | undefined;
-  visitSimpleType?: ((ctx: SimpleTypeContext) => Node) | undefined;
-  visitArraySuffix?: ((ctx: ArraySuffixContext) => Node) | undefined;
-  visitUnionType?: ((ctx: UnionTypeContext) => Node) | undefined;
-  visitUnionTypeInner?: ((ctx: UnionTypeInnerContext) => Node) | undefined;
-  visitPrimitiveType?: ((ctx: PrimitiveTypeContext) => Node) | undefined;
+class Visitor implements YorkieSchemaVisitor<Node> {
   visit(tree: ParseTree): Node {
     return tree.accept(this);
   }
@@ -52,17 +26,17 @@ class Visitor implements SchemaVisitor<Node> {
   visitTerminal(node: TerminalNode): Node {
     return new Node(node.text);
   }
-  visitErrorNode(_: ErrorNode): Node {
-    throw new Error('Method not implemented.');
+  visitErrorNode(node: ErrorNode): Node {
+    return new Node(node.text);
   }
 }
 
 export function validate(data: string): boolean {
   const stream = CharStreams.fromString(data);
-  const lexer = new SchemaLexer(stream);
+  const lexer = new YorkieSchemaLexer(stream);
   const tokens = new CommonTokenStream(lexer);
-  const parser = new SchemaParser(tokens);
-  const ast = parser.start();
+  const parser = new YorkieSchemaParser(tokens);
+  const ast = parser.declaration();
   const visitor = new Visitor();
   visitor.visit(ast);
 

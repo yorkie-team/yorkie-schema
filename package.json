@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:schema": "antlr4ts -visitor antlr/Schema.g4",
+    "build:schema": "antlr4ts -visitor antlr/YorkieSchema.g4",
     "test": "vitest",
     "preview": "vite preview"
   },
