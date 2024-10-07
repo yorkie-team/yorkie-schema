@@ -1,4 +1,11 @@
-import { CharStreams, CommonTokenStream } from 'antlr4ts';
+import {
+  CharStreams,
+  CommonTokenStream,
+  ANTLRErrorListener,
+  Recognizer,
+  Token,
+  CommonToken,
+} from 'antlr4ts';
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { YorkieSchemaLexer } from '../antlr/YorkieSchemaLexer';
 import { YorkieSchemaVisitor } from '../antlr/YorkieSchemaVisitor';
@@ -6,6 +13,15 @@ import { YorkieSchemaParser } from '../antlr/YorkieSchemaParser';
 import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
+
+export type Diagnostic = {
+  severity: 'error' | 'warning' | 'info';
+  message: string;
+  range: {
+    start: { column: number; line: number };
+    end: { column: number; line: number };
+  };
+};
 
 class Node {
   constructor(public name: string) {}
@@ -31,6 +47,36 @@ class Visitor implements YorkieSchemaVisitor<Node> {
   }
 }
 
+class ParserErrorListener implements ANTLRErrorListener<CommonToken> {
+  constructor(private errorList: Diagnostic[]) {}
+
+  syntaxError<T extends Token>(
+    _: Recognizer<T, any>,
+    offendingSymbol: T | undefined,
+    line: number,
+    charPositionInLine: number,
+    msg: string,
+  ): void {
+    const error: Diagnostic = {
+      severity: 'error',
+      message: msg,
+      range: {
+        start: { column: charPositionInLine, line },
+        end: { column: charPositionInLine + 1, line },
+      },
+    };
+
+    if (offendingSymbol) {
+      error.range.end.column =
+        charPositionInLine +
+        offendingSymbol.stopIndex -
+        offendingSymbol.startIndex +
+        1;
+    }
+    this.errorList.push(error);
+  }
+}
+
 export function validate(data: string): boolean {
   const stream = CharStreams.fromString(data);
   const lexer = new YorkieSchemaLexer(stream);
@@ -41,4 +87,20 @@ export function validate(data: string): boolean {
   visitor.visit(ast);
 
   return true;
+}
+
+export function getDiagnostics(data: string): Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+
+  const stream = CharStreams.fromString(data);
+  const lexer = new YorkieSchemaLexer(stream);
+  const tokens = new CommonTokenStream(lexer);
+  const parser = new YorkieSchemaParser(tokens);
+
+  parser.removeErrorListeners();
+  const errorListener = new ParserErrorListener(diagnostics);
+  parser.addErrorListener(errorListener);
+  parser.declaration();
+
+  return diagnostics;
 }
