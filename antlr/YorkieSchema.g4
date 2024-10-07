@@ -1,9 +1,7 @@
 grammar YorkieSchema;
 
 // Top-level structure
-document: declarationList EOF;
-
-declarationList: declaration (WS* declaration)*;
+document: declaration* EOF;
 
 declaration
     : typeAliasDeclaration

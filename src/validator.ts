@@ -94,12 +94,14 @@ export function getDiagnostics(data: string): Diagnostic[] {
 
   const stream = CharStreams.fromString(data);
   const lexer = new YorkieSchemaLexer(stream);
+  // TODO(hackerwins): Add error listener to lexer.
+  // lexer.removeErrorListeners();
+  // lexer.addErrorListener(new LexerErrorListener(diagnostics));
+
   const tokens = new CommonTokenStream(lexer);
   const parser = new YorkieSchemaParser(tokens);
-
   parser.removeErrorListeners();
-  const errorListener = new ParserErrorListener(diagnostics);
-  parser.addErrorListener(errorListener);
+  parser.addErrorListener(new ParserErrorListener(diagnostics));
   parser.declaration();
 
   return diagnostics;

@@ -4,7 +4,6 @@
 import { ParseTreeListener } from "antlr4ts/tree/ParseTreeListener";
 
 import { DocumentContext } from "./YorkieSchemaParser";
-import { DeclarationListContext } from "./YorkieSchemaParser";
 import { DeclarationContext } from "./YorkieSchemaParser";
 import { TypeAliasDeclarationContext } from "./YorkieSchemaParser";
 import { VariableDeclarationContext } from "./YorkieSchemaParser";
@@ -46,17 +45,6 @@ export interface YorkieSchemaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitDocument?: (ctx: DocumentContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `YorkieSchemaParser.declarationList`.
-	 * @param ctx the parse tree
-	 */
-	enterDeclarationList?: (ctx: DeclarationListContext) => void;
-	/**
-	 * Exit a parse tree produced by `YorkieSchemaParser.declarationList`.
-	 * @param ctx the parse tree
-	 */
-	exitDeclarationList?: (ctx: DeclarationListContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `YorkieSchemaParser.declaration`.

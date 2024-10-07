@@ -4,7 +4,6 @@
 import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
 
 import { DocumentContext } from "./YorkieSchemaParser";
-import { DeclarationListContext } from "./YorkieSchemaParser";
 import { DeclarationContext } from "./YorkieSchemaParser";
 import { TypeAliasDeclarationContext } from "./YorkieSchemaParser";
 import { VariableDeclarationContext } from "./YorkieSchemaParser";
@@ -45,13 +44,6 @@ export interface YorkieSchemaVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitDocument?: (ctx: DocumentContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `YorkieSchemaParser.declarationList`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitDeclarationList?: (ctx: DeclarationListContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `YorkieSchemaParser.declaration`.
