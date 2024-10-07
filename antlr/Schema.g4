@@ -50,7 +50,7 @@ objectTypeDefinition
 	;
 
 fieldDefList
-	: fieldDef ( (COMMA | SEMICOLON | NEWLINE) fieldDef)*
+	: fieldDef ((COMMA | SEMICOLON | NEWLINE) fieldDef)*
 	;
 
 identifier: IDENTIFIER;
@@ -79,7 +79,8 @@ primitiveType:
 	| 'null'
 	| 'bigint'
 	| 'Uint8Array'
-	| 'Date';
+	| 'Date'
+	;
 
 literalType:
 	booleanLiteralType
@@ -99,8 +100,11 @@ yorkieType:
 	| yorkieTextType
 	| yorkieTreeType;
 
-yorkieObjectType: YORKIE_OBJECT LT GT;
-yorkieArrayType: YORKIE_ARRAY LT GT;
-yorkieCounterType: YORKIE_COUNTER LT GT;
-yorkieTextType: YORKIE_TEXT LT GT;
+yorkieObjectType:
+	YORKIE_OBJECT LT (typeReference | objectLiteralType) GT;
+yorkieArrayType:
+	YORKIE_ARRAY LT (typeReference | objectLiteralType) GT;
+yorkieCounterType: YORKIE_COUNTER;
+yorkieTextType:
+	YORKIE_TEXT LT (typeReference | objectLiteralType) GT;
 yorkieTreeType: YORKIE_TREE LT GT;
