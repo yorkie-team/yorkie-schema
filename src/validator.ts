@@ -43,7 +43,7 @@ class Visitor implements YorkieSchemaVisitor<Node> {
     return new Node(node.text);
   }
   visitErrorNode(node: ErrorNode): Node {
-    throw new Error(`Syntax error at: ${node.text}`);
+    return new Node(node.text);
   }
 }
 
@@ -103,20 +103,27 @@ class ParserErrorListener implements ANTLRErrorListener<CommonToken> {
 }
 
 export function validate(data: string): boolean {
+  const diagnostics: Diagnostic[] = [];
   const stream = CharStreams.fromString(data);
   const lexer = new YorkieSchemaLexer(stream);
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(new LexerErrorListener(diagnostics));
+
   const tokens = new CommonTokenStream(lexer);
   const parser = new YorkieSchemaParser(tokens);
+  parser.removeErrorListeners();
+  parser.addErrorListener(new ParserErrorListener(diagnostics));
 
-  try {
-    const ast = parser.declaration();
-    const visitor = new Visitor();
-    visitor.visit(ast);
-    return true;
-  } catch (e) {
-    console.error(`validation error: ${e}`);
+  const ast = parser.declaration();
+  const visitor = new Visitor();
+  visitor.visit(ast);
+
+  if (diagnostics.length > 0) {
+    console.error(diagnostics.map((d) => d.message).join('\n'));
     return false;
   }
+
+  return true;
 }
 
 export function getDiagnostics(data: string): Diagnostic[] {

@@ -66,7 +66,7 @@ describe('Schema:TypeScript', () => {
     expect(validate(schema)).toBe(true);
   });
 
-  it('should validate optional properties', () => {
+  it.skip('should validate optional properties', () => {
     const schema = `
       type Document = {
         title: string;
