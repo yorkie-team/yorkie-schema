@@ -1,7 +1,7 @@
-import { CharStreams, CommonTokenStream } from "antlr4ts";
-import { ParseTree } from "antlr4ts/tree/ParseTree";
-import { SchemaLexer } from "../antlr/SchemaLexer";
-import { SchemaVisitor } from "../antlr/SchemaVisitor";
+import { CharStreams, CommonTokenStream } from 'antlr4ts';
+import { ParseTree } from 'antlr4ts/tree/ParseTree';
+import { SchemaLexer } from '../antlr/SchemaLexer';
+import { SchemaVisitor } from '../antlr/SchemaVisitor';
 import {
   ArraySuffixContext,
   FieldContext,
@@ -16,10 +16,10 @@ import {
   TypeExpressionContext,
   UnionTypeContext,
   UnionTypeInnerContext,
-} from "../antlr/SchemaParser";
-import { ErrorNode } from "antlr4ts/tree/ErrorNode";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
-import { TerminalNode } from "antlr4ts/tree/TerminalNode";
+} from '../antlr/SchemaParser';
+import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
+import { RuleNode } from 'antlr4ts/tree/RuleNode';
+import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 
 class Node {
   constructor(public name: string) {}
@@ -47,13 +47,13 @@ class Visitor implements SchemaVisitor<Node> {
       const child = node.getChild(i);
       this.visit(child);
     }
-    return new Node("children");
+    return new Node('children');
   }
   visitTerminal(node: TerminalNode): Node {
     return new Node(node.text);
   }
-  visitErrorNode(node: ErrorNode): Node {
-    throw new Error("Method not implemented.");
+  visitErrorNode(_: ErrorNode): Node {
+    throw new Error('Method not implemented.');
   }
 }
 

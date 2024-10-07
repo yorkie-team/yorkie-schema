@@ -1,8 +1,8 @@
-import { describe, it, assert } from "vitest";
-import { validate } from "../src/validator";
+import { describe, it, assert } from 'vitest';
+import { validate } from '../src/validator';
 
-describe("Schema", () => {
-  it("should be able to parse the valid schema", () => {
+describe('Schema', () => {
+  it('should be able to parse the valid schema', () => {
     // 우리가 생각하는 Schema의 스팩은?
     // - TypeScript와 유사한 타입 정의 문법을 사용한다.
     // - Yorkie가 갖고 있는 기본 타입을 사용할 수 있다.
@@ -22,7 +22,7 @@ describe("Schema", () => {
           title: string
           completed: boolean
         }
-      `)
+      `),
     );
   });
 });
