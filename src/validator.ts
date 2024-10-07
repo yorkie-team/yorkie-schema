@@ -1,4 +1,11 @@
-import { CharStreams, CommonTokenStream } from 'antlr4ts';
+import {
+  CharStreams,
+  CommonTokenStream,
+  ANTLRErrorListener,
+  Recognizer,
+  Token,
+  CommonToken,
+} from 'antlr4ts';
 import { ParseTree } from 'antlr4ts/tree/ParseTree';
 import { SchemaLexer } from '../antlr/SchemaLexer';
 import { SchemaVisitor } from '../antlr/SchemaVisitor';
@@ -28,10 +35,19 @@ import {
   YorkieTextTypeContext,
   YorkieTreeTypeContext,
   SchemaParser,
-} from "../antlr/SchemaParser";
-import { ErrorNode } from "antlr4ts/tree/ErrorNode";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
-import { TerminalNode } from "antlr4ts/tree/TerminalNode";
+} from '../antlr/SchemaParser';
+import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
+import { RuleNode } from 'antlr4ts/tree/RuleNode';
+import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
+
+export type Diagnostic = {
+  severity: 'error' | 'warning' | 'info';
+  message: string;
+  range: {
+    start: { column: number; line: number };
+    end: { column: number; line: number };
+  };
+};
 
 class Node {
   constructor(public name: string) {}
@@ -42,7 +58,9 @@ class Visitor implements SchemaVisitor<Node> {
   visitDefinitionList?: ((ctx: DefinitionListContext) => Node) | undefined;
   visitDefinition?: ((ctx: DefinitionContext) => Node) | undefined;
   visitTypeName?: ((ctx: TypeNameContext) => Node) | undefined;
-  visitObjectTypeDefinition?: ((ctx: ObjectTypeDefinitionContext) => Node) | undefined;
+  visitObjectTypeDefinition?:
+    | ((ctx: ObjectTypeDefinitionContext) => Node)
+    | undefined;
   visitFieldDefList?: ((ctx: FieldDefListContext) => Node) | undefined;
   visitTypeIdentifier?: ((ctx: IdentifierContext) => Node) | undefined;
   visitFieldDef?: ((ctx: FieldDefContext) => Node) | undefined;
@@ -50,16 +68,26 @@ class Visitor implements SchemaVisitor<Node> {
   visitNonUnionType?: ((ctx: NonUnionTypeContext) => Node) | undefined;
   visitNonUnionTypeL2?: ((ctx: NonUnionTypeL2Context) => Node) | undefined;
   visitTypeReference?: ((ctx: TypeReferenceContext) => Node) | undefined;
-  visitObjectLiteralType?: ((ctx: ObjectLiteralTypeContext) => Node) | undefined;
+  visitObjectLiteralType?:
+    | ((ctx: ObjectLiteralTypeContext) => Node)
+    | undefined;
   visitPrimitiveType?: ((ctx: PrimitiveTypeContext) => Node) | undefined;
   visitLiteralType?: ((ctx: LiteralTypeContext) => Node) | undefined;
-  visitNumberLiteralType?: ((ctx: NumberLiteralTypeContext) => Node) | undefined;
-  visitBooleanLiteralType?: ((ctx: BooleanLiteralTypeContext) => Node) | undefined;
-  visitStringLiteralType?: ((ctx: StringLiteralTypeContext) => Node) | undefined;
+  visitNumberLiteralType?:
+    | ((ctx: NumberLiteralTypeContext) => Node)
+    | undefined;
+  visitBooleanLiteralType?:
+    | ((ctx: BooleanLiteralTypeContext) => Node)
+    | undefined;
+  visitStringLiteralType?:
+    | ((ctx: StringLiteralTypeContext) => Node)
+    | undefined;
   visitYorkieType?: ((ctx: YorkieTypeContext) => Node) | undefined;
   visitYorkieObjectType?: ((ctx: YorkieObjectTypeContext) => Node) | undefined;
   visitYorkieArrayType?: ((ctx: YorkieArrayTypeContext) => Node) | undefined;
-  visitYorkieCounterType?: ((ctx: YorkieCounterTypeContext) => Node) | undefined;
+  visitYorkieCounterType?:
+    | ((ctx: YorkieCounterTypeContext) => Node)
+    | undefined;
   visitYorkieTextType?: ((ctx: YorkieTextTypeContext) => Node) | undefined;
   visitYorkieTreeType?: ((ctx: YorkieTreeTypeContext) => Node) | undefined;
   visit(tree: ParseTree): Node {
@@ -82,7 +110,35 @@ class Visitor implements SchemaVisitor<Node> {
   }
 }
 
+class ParserErrorListener implements ANTLRErrorListener<CommonToken> {
+  constructor(private errorList: Diagnostic[]) {}
 
+  syntaxError<T extends Token>(
+    _: Recognizer<T, any>,
+    offendingSymbol: T | undefined,
+    line: number,
+    charPositionInLine: number,
+    msg: string,
+  ): void {
+    const error: Diagnostic = {
+      severity: 'error',
+      message: msg,
+      range: {
+        start: { column: charPositionInLine, line },
+        end: { column: charPositionInLine + 1, line },
+      },
+    };
+
+    if (offendingSymbol) {
+      error.range.end.column =
+        charPositionInLine +
+        offendingSymbol.stopIndex -
+        offendingSymbol.startIndex +
+        1;
+    }
+    this.errorList.push(error);
+  }
+}
 
 export function validate(data: string): boolean {
   try {
@@ -102,4 +158,20 @@ export function validate(data: string): boolean {
     }
     return false;
   }
+}
+
+export function getDiagnostics(data: string): Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+
+  const stream = CharStreams.fromString(data);
+  const lexer = new SchemaLexer(stream);
+  const tokens = new CommonTokenStream(lexer);
+  const parser = new SchemaParser(tokens);
+
+  parser.removeErrorListeners();
+  const errorListener = new ParserErrorListener(diagnostics);
+  parser.addErrorListener(errorListener);
+  parser.document();
+
+  return diagnostics;
 }
