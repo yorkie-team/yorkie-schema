@@ -8,14 +8,22 @@
     "build": "tsc && vite build",
     "build:schema": "antlr4ts -visitor antlr/Schema.g4",
     "test": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:grammar": "lezer-generator src/syntax.grammar -o src/syntax.js"
   },
   "devDependencies": {
+    "@lezer/generator": "^1.7.1",
     "antlr4ts": "^0.5.0-alpha.4",
     "antlr4ts-cli": "^0.5.0-alpha.4",
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vitest": "^2.1.1"
+  },
+  "dependencies": {
+    "@codemirror/language": "^6.10.3",
+    "@codemirror/lint": "^6.8.2",
+    "@lezer/highlight": "^1.2.1",
+    "@liveblocks/schema": "^0.0.12"
   }
 }
