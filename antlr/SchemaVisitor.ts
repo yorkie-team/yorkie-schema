@@ -3,18 +3,30 @@
 
 import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
 
-import { StartContext } from "./SchemaParser";
-import { TypeDefinitionsContext } from "./SchemaParser";
-import { TypeDefinitionContext } from "./SchemaParser";
-import { FieldListContext } from "./SchemaParser";
-import { FieldContext } from "./SchemaParser";
-import { FieldTypeContext } from "./SchemaParser";
-import { TypeExpressionContext } from "./SchemaParser";
-import { SimpleTypeContext } from "./SchemaParser";
-import { ArraySuffixContext } from "./SchemaParser";
-import { UnionTypeContext } from "./SchemaParser";
-import { UnionTypeInnerContext } from "./SchemaParser";
+import { DocumentContext } from "./SchemaParser";
+import { DefinitionListContext } from "./SchemaParser";
+import { DefinitionContext } from "./SchemaParser";
+import { TypeNameContext } from "./SchemaParser";
+import { ObjectTypeDefinitionContext } from "./SchemaParser";
+import { FieldDefListContext } from "./SchemaParser";
+import { IdentifierContext } from "./SchemaParser";
+import { FieldDefContext } from "./SchemaParser";
+import { TypeContext } from "./SchemaParser";
+import { NonUnionTypeContext } from "./SchemaParser";
+import { NonUnionTypeL2Context } from "./SchemaParser";
+import { TypeReferenceContext } from "./SchemaParser";
+import { ObjectLiteralTypeContext } from "./SchemaParser";
 import { PrimitiveTypeContext } from "./SchemaParser";
+import { LiteralTypeContext } from "./SchemaParser";
+import { BooleanLiteralTypeContext } from "./SchemaParser";
+import { NumberLiteralTypeContext } from "./SchemaParser";
+import { StringLiteralTypeContext } from "./SchemaParser";
+import { YorkieTypeContext } from "./SchemaParser";
+import { YorkieObjectTypeContext } from "./SchemaParser";
+import { YorkieArrayTypeContext } from "./SchemaParser";
+import { YorkieCounterTypeContext } from "./SchemaParser";
+import { YorkieTextTypeContext } from "./SchemaParser";
+import { YorkieTreeTypeContext } from "./SchemaParser";
 
 
 /**
@@ -26,81 +38,95 @@ import { PrimitiveTypeContext } from "./SchemaParser";
  */
 export interface SchemaVisitor<Result> extends ParseTreeVisitor<Result> {
 	/**
-	 * Visit a parse tree produced by `SchemaParser.start`.
+	 * Visit a parse tree produced by `SchemaParser.document`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitStart?: (ctx: StartContext) => Result;
+	visitDocument?: (ctx: DocumentContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.typeDefinitions`.
+	 * Visit a parse tree produced by `SchemaParser.definitionList`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitTypeDefinitions?: (ctx: TypeDefinitionsContext) => Result;
+	visitDefinitionList?: (ctx: DefinitionListContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.typeDefinition`.
+	 * Visit a parse tree produced by `SchemaParser.definition`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitTypeDefinition?: (ctx: TypeDefinitionContext) => Result;
+	visitDefinition?: (ctx: DefinitionContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.fieldList`.
+	 * Visit a parse tree produced by `SchemaParser.typeName`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitFieldList?: (ctx: FieldListContext) => Result;
+	visitTypeName?: (ctx: TypeNameContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.field`.
+	 * Visit a parse tree produced by `SchemaParser.objectTypeDefinition`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitField?: (ctx: FieldContext) => Result;
+	visitObjectTypeDefinition?: (ctx: ObjectTypeDefinitionContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.fieldType`.
+	 * Visit a parse tree produced by `SchemaParser.fieldDefList`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitFieldType?: (ctx: FieldTypeContext) => Result;
+	visitFieldDefList?: (ctx: FieldDefListContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.typeExpression`.
+	 * Visit a parse tree produced by `SchemaParser.identifier`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitTypeExpression?: (ctx: TypeExpressionContext) => Result;
+	visitIdentifier?: (ctx: IdentifierContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.simpleType`.
+	 * Visit a parse tree produced by `SchemaParser.fieldDef`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitSimpleType?: (ctx: SimpleTypeContext) => Result;
+	visitFieldDef?: (ctx: FieldDefContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.arraySuffix`.
+	 * Visit a parse tree produced by `SchemaParser.type`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitArraySuffix?: (ctx: ArraySuffixContext) => Result;
+	visitType?: (ctx: TypeContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.unionType`.
+	 * Visit a parse tree produced by `SchemaParser.nonUnionType`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitUnionType?: (ctx: UnionTypeContext) => Result;
+	visitNonUnionType?: (ctx: NonUnionTypeContext) => Result;
 
 	/**
-	 * Visit a parse tree produced by `SchemaParser.unionTypeInner`.
+	 * Visit a parse tree produced by `SchemaParser.nonUnionTypeL2`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitUnionTypeInner?: (ctx: UnionTypeInnerContext) => Result;
+	visitNonUnionTypeL2?: (ctx: NonUnionTypeL2Context) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.typeReference`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitTypeReference?: (ctx: TypeReferenceContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.objectLiteralType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitObjectLiteralType?: (ctx: ObjectLiteralTypeContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `SchemaParser.primitiveType`.
@@ -108,5 +134,75 @@ export interface SchemaVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitPrimitiveType?: (ctx: PrimitiveTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.literalType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitLiteralType?: (ctx: LiteralTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.booleanLiteralType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitBooleanLiteralType?: (ctx: BooleanLiteralTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.numberLiteralType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitNumberLiteralType?: (ctx: NumberLiteralTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.stringLiteralType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitStringLiteralType?: (ctx: StringLiteralTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.yorkieType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitYorkieType?: (ctx: YorkieTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.yorkieObjectType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitYorkieObjectType?: (ctx: YorkieObjectTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.yorkieArrayType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitYorkieArrayType?: (ctx: YorkieArrayTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.yorkieCounterType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitYorkieCounterType?: (ctx: YorkieCounterTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.yorkieTextType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitYorkieTextType?: (ctx: YorkieTextTypeContext) => Result;
+
+	/**
+	 * Visit a parse tree produced by `SchemaParser.yorkieTreeType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitYorkieTreeType?: (ctx: YorkieTreeTypeContext) => Result;
 }
 
