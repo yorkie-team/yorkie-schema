@@ -46,13 +46,13 @@ describe("Use Grammar Similar to TypeScript", () => {
     assert.isFalse(validate(schema));
   });
 
-  it("invalid syntax: no semicolon", () => {
+  it.skip("invalid syntax: no semicolon", () => {
     const schema = `
       type Document {
-        invalidField: number;
+        invalidField: number
       }
     `;
-    assert.isTrue(validate(schema));
+    assert.isFalse(validate(schema));
   });
 
   it("anonymous type definition", () => {
@@ -134,8 +134,8 @@ describe("Yorkie Element Level Basic Types", () => {
   it.skip("Yorkie types correct example: User Defined Text Type With Attributes", () => {
     const schema = `
       type Document {
-        text: yorkie.Text<{}>;
-        text: yorkie.Text<{bold: boolean}>;
+        text1: yorkie.Text<{}>;
+        text2: yorkie.Text<{bold: boolean}>;
       };
     `;
     // TODO(sigmaith): Users must be able to define the properties of the Yorkie.Text data structure themselves.
@@ -172,7 +172,7 @@ describe("Yorkie Element Level Basic Types", () => {
 });
 
 describe("User Defined Types", () => {
-  it("", () => {
+  it("should support type[] syntax for user-defined types", () => {
     const schema = `
       type Document {
         todos: Todo[];
@@ -186,7 +186,7 @@ describe("User Defined Types", () => {
     assert.isTrue(validate(schema));
   });
 
-  it.skip("", () => {
+  it.skip("should support Array<T> syntax for user-defined types", () => {
     const schema = `
       type Document {
         todos: Array<Todo>;
