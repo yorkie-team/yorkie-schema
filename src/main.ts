@@ -1,24 +1,41 @@
-import './style.css';
-import typescriptLogo from './typescript.svg';
-import viteLogo from '/vite.svg';
-import { setupCounter } from './counter.ts';
+import { EditorState } from '@codemirror/state';
+import { linter, lintGutter, Diagnostic } from '@codemirror/lint';
+import { basicSetup, EditorView } from 'codemirror';
+import { getDiagnostics } from './validator';
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`;
+const yorkieLinter = linter((view) => {
+  const code = view.state.doc.toString();
+  const diagnostics: Diagnostic[] = getDiagnostics(code).map((data) => {
+    return {
+      from:
+        view.state.doc.line(data.range.start.line).from +
+        data.range.start.column,
+      to: view.state.doc.line(data.range.end.line).from + data.range.end.column,
+      message: data.message,
+      severity: data.severity,
+    };
+  });
+  return diagnostics;
+});
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!);
+new EditorView({
+  state: EditorState.create({
+    doc: `// 🐾 Yorkie Schema Example
+
+// This is the root of your document
+// Every schema must define a Document type
+type Document = {
+  // theme: "light" | "dark";
+  history: Event[];
+  text: yorkie.Text;
+};
+
+type Event = {
+  statusCode: 200 | 400;
+  info: string;
+};
+      `,
+    extensions: [basicSetup, yorkieLinter, lintGutter()],
+  }),
+  parent: document.getElementById('editor')!,
+});
