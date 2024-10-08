@@ -22,3 +22,12 @@ For testing Yorkie Schema:
 ```sh
 $ npm test
 ```
+
+You can also test the grammar manually with CodeMirror:
+
+```sh
+$ npm run dev
+$ open http://localhost:5173
+```
+
+https://github.com/user-attachments/assets/4f48ab15-4224-41a2-bfcf-1aa6c86977a1
