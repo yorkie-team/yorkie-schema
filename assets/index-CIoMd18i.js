@@ -622,6 +622,7 @@ N\fQS[cqsu~ "
 type Document = {
   theme: "light" | "dark";
   history: Array<Change>;
+  tree: yorkie.Tree;
   text: yorkie.Text;
   object: yorkie.Object; // Error: yorkie.Object requires a generic type
   array: yorkie.Array;   // Error: yorkie.Array requires a generic type
