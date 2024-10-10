@@ -218,7 +218,7 @@ describe('Schema:User-Defined', () => {
   });
 });
 
-describe('Schema:Exception', () => {
+describe('Schema:Semantic', () => {
   it.skip('should not parse a schema with undefined types', () => {
     const schema = `
       type Document = {
