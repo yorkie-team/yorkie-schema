@@ -1,11 +1,11 @@
 import { EditorState } from '@codemirror/state';
 import { linter, lintGutter, Diagnostic } from '@codemirror/lint';
 import { basicSetup, EditorView } from 'codemirror';
-import { getDiagnostics } from './validator';
+import { toDiagnostics } from './validator';
 
-const yorkieLinter = linter((view) => {
+const yorkieLinter = linter((view): Array<Diagnostic> => {
   const code = view.state.doc.toString();
-  const diagnostics: Diagnostic[] = getDiagnostics(code).map((data) => {
+  return toDiagnostics(code).map((data) => {
     return {
       from:
         view.state.doc.line(data.range.start.line).from +
@@ -15,7 +15,6 @@ const yorkieLinter = linter((view) => {
       severity: data.severity,
     };
   });
-  return diagnostics;
 });
 
 new EditorView({
@@ -25,7 +24,7 @@ new EditorView({
 // This is the root of your document
 // Every schema must define a Document type
 type Document = {
-  // theme: "light" | "dark";
+  theme: "light" | "dark";
   history: Event[];
   text: yorkie.Text;
 };

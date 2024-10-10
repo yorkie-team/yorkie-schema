@@ -126,8 +126,8 @@ export function validate(data: string): boolean {
   return true;
 }
 
-export function getDiagnostics(data: string): Diagnostic[] {
-  const diagnostics: Diagnostic[] = [];
+export function toDiagnostics(data: string): Array<Diagnostic> {
+  const diagnostics: Array<Diagnostic> = [];
 
   const stream = CharStreams.fromString(data);
   const lexer = new YorkieSchemaLexer(stream);

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { validate } from '../src/validator';
 
 describe('Schema:TypeScript', () => {
-  it.skip('should validate value restriction with literal types', () => {
+  it('should validate value restriction with literal types', () => {
     const schema = `
       type Document = {
         theme: "light" | "dark";
@@ -66,7 +66,7 @@ describe('Schema:TypeScript', () => {
     expect(validate(schema)).toBe(true);
   });
 
-  it.skip('should validate optional properties', () => {
+  it('should validate optional properties', () => {
     const schema = `
       type Document = {
         title: string;
@@ -126,33 +126,32 @@ describe('Schema:Yorkie', () => {
     expect(validate(schema)).toBe(true);
   });
 
-  it.skip('should validate Yorkie types with user-defined attributes', () => {
+  it('should validate Yorkie types with user-defined attributes', () => {
     const schema = `
       type Document = {
         text1: yorkie.Text<{}>;
-        text2: yorkie.Text<{bold: boolean}>;
+        text2: yorkie.Text<{bold: boolean;}>;
       };
     `;
     expect(validate(schema)).toBe(true);
   });
 
-  it.skip('should detect incorrect usage of Yorkie type', () => {
+  it('should detect incorrect usage of Yorkie type', () => {
     const schema = `
       type Document = {
         object: yorkie.Object;
         array: yorkie.Array;
       };
     `;
-    // TODO(hackerwins): We need to figure out the intention of this test.
     expect(validate(schema)).toBe(false);
   });
 
-  it.skip("should parse a schema using Yorkie's complex types", () => {
+  it(`should parse a schema using Yorkie's complex types`, () => {
     const schema = `
       type Todo = {
         title: string;
         completed: boolean;
-      }
+      };
       type Document = {
         object: yorkie.Object<{}>;
         array: yorkie.Array<string>;
@@ -203,10 +202,10 @@ describe('Schema:User-Defined', () => {
         banana: number;
         cookie: boolean;
         dog: number[];
-        string_or_number: string | number;  
-        array_of_string_or_number: (string | number)[];
+        stringOrNumber: string | number;  
+        arrayOfStringOrNumber: (string | number)[];
         complex: string | number | boolean[];
-        array_of_complex: (string | number | boolean)[];  
+        arrayOfComplex: (string | number | boolean)[];  
       };
       type UserDetail = {
         address: string;
@@ -219,8 +218,8 @@ describe('Schema:User-Defined', () => {
   });
 });
 
-describe.skip('Schema:Exception', () => {
-  it('should not parse a schema with undefined types', () => {
+describe('Schema:Exception', () => {
+  it.skip('should not parse a schema with undefined types', () => {
     const schema = `
       type Document = {
         unknownType: Hello;
@@ -233,31 +232,31 @@ describe.skip('Schema:Exception', () => {
     const schema = `
       type string = {
         field1: string;
-      }
+      };
     `;
     expect(validate(schema)).toBe(false);
   });
 
-  it('shoud restrict unused type definition', () => {
+  it.skip('shoud restrict unused type definition', () => {
     const schema = `
       type UserType = {
         field1: string;
-      }
+      };
     `;
     expect(validate(schema)).toBe(false);
   });
 
-  it('should detect type cycle', () => {
+  it.skip('should detect type cycle', () => {
     const schema = `
       type Hello = {
         field1: string;
         field2: World;
-      }
+      };
       
       type World = {
         field1: string;
         field2: Hello;
-      }
+      };
     `;
     expect(validate(schema)).toBe(false);
   });
