@@ -43,6 +43,7 @@ primaryType
     | objectType
     | yorkieType
     | typeReference
+    | literal
     ;
 
 primitiveType
@@ -60,7 +61,7 @@ objectType
     ;
 
 propertySignature
-    : propertyName typeAnnotation ';'
+    : propertyName '?'? typeAnnotation ';'
     ;
 
 propertyName
@@ -70,11 +71,11 @@ propertyName
 
 // Yorkie specific types
 yorkieType
-    : 'yorkie.Object'
-    | 'yorkie.Array'
-    | 'yorkie.Counter'
-    | 'yorkie.Text'
-    | 'yorkie.Tree'
+    : 'yorkie.Object' typeArguments
+    | 'yorkie.Array' typeArguments
+    | 'yorkie.Counter' typeArguments?
+    | 'yorkie.Text' typeArguments?
+    | 'yorkie.Tree' typeArguments?
     ;
 
 typeReference
