@@ -35,6 +35,7 @@ intersectionType
 
 arrayType
     : primaryType ('[' ']')*
+    | 'Array' typeArguments
     ;
 
 primaryType

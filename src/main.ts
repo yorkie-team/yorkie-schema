@@ -1,11 +1,11 @@
 import { EditorState } from '@codemirror/state';
 import { linter, lintGutter, Diagnostic } from '@codemirror/lint';
 import { basicSetup, EditorView } from 'codemirror';
-import { toDiagnostics } from './validator';
+import { validate } from './validator';
 
 const yorkieLinter = linter((view): Array<Diagnostic> => {
   const code = view.state.doc.toString();
-  return toDiagnostics(code).map((data) => {
+  return validate(code).errors.map((data) => {
     return {
       from:
         view.state.doc.line(data.range.start.line).from +
