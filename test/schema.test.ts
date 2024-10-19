@@ -14,7 +14,7 @@ describe('Schema:TypeScript', () => {
         info: string;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should validate array with anonymous type definition', () => {
@@ -23,7 +23,7 @@ describe('Schema:TypeScript', () => {
         objectArray: { name: string; age: number; }[];
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should validate union types', () => {
@@ -33,7 +33,7 @@ describe('Schema:TypeScript', () => {
         author: string | null;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should detect invalid syntax: empty type definition', () => {
@@ -42,7 +42,7 @@ describe('Schema:TypeScript', () => {
         invalidField: 
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
   it('should detect invalid syntax: no semicolon', () => {
@@ -51,7 +51,7 @@ describe('Schema:TypeScript', () => {
         invalidField: number
       }
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
   it('should validate anonymous type definition', () => {
@@ -63,7 +63,7 @@ describe('Schema:TypeScript', () => {
         };
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should validate optional properties', () => {
@@ -74,10 +74,10 @@ describe('Schema:TypeScript', () => {
         author?: string;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
-  it.skip('should detect unsupported types in TypeScript', () => {
+  it('should detect unsupported types in TypeScript', () => {
     const schema = `
       type Document = {
         title: float;
@@ -85,7 +85,7 @@ describe('Schema:TypeScript', () => {
         author?: long;
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
   it('should validate schema with comments', () => {
@@ -95,7 +95,7 @@ describe('Schema:TypeScript', () => {
         field: string;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 });
 
@@ -106,13 +106,12 @@ describe('Schema:Yorkie', () => {
         field1: null;
         field2: boolean;
         field3: number;
-        field4: bigint;
-        field5: Uint8Array;
-        field6: Date;
+        field4: any;
         field7: string;
+        field8: undefined;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should parse a schema with Yorkie Types', () => {
@@ -123,7 +122,7 @@ describe('Schema:Yorkie', () => {
         text: yorkie.Text;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should validate Yorkie types with user-defined attributes', () => {
@@ -133,7 +132,7 @@ describe('Schema:Yorkie', () => {
         text2: yorkie.Text<{bold: boolean;}>;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should detect incorrect usage of Yorkie type', () => {
@@ -143,7 +142,7 @@ describe('Schema:Yorkie', () => {
         array: yorkie.Array;
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
   it(`should parse a schema using Yorkie's complex types`, () => {
@@ -159,7 +158,7 @@ describe('Schema:Yorkie', () => {
         array3: yorkie.Array<Todo>;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 });
 
@@ -174,7 +173,7 @@ describe('Schema:User-Defined', () => {
         completed: boolean;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should support Array<T> syntax for user-defined types', () => {
@@ -187,7 +186,7 @@ describe('Schema:User-Defined', () => {
         completed: boolean;
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 
   it('should validate multiple user-defined types', () => {
@@ -214,18 +213,18 @@ describe('Schema:User-Defined', () => {
         bar: string[];
       };
     `;
-    expect(validate(schema)).toBe(true);
+    expect(validate(schema).errors.length).toBe(0);
   });
 });
 
 describe('Schema:Semantic', () => {
-  it.skip('should not parse a schema with undefined types', () => {
+  it('should not parse a schema with undefined types', () => {
     const schema = `
       type Document = {
         unknownType: Hello;
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
   it('should restrict the use of reserved words', () => {
@@ -234,16 +233,16 @@ describe('Schema:Semantic', () => {
         field1: string;
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
-  it.skip('shoud restrict unused type definition', () => {
+  it.skip('should restrict unused type definition', () => {
     const schema = `
       type UserType = {
         field1: string;
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
   it.skip('should detect type cycle', () => {
@@ -258,6 +257,6 @@ describe('Schema:Semantic', () => {
         field2: Hello;
       };
     `;
-    expect(validate(schema)).toBe(false);
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 });
