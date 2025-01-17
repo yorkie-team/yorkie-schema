@@ -8,7 +8,10 @@ import {
   RecognitionException,
 } from 'antlr4ts';
 import { YorkieSchemaLexer } from '../antlr/YorkieSchemaLexer';
-import { YorkieSchemaParser } from '../antlr/YorkieSchemaParser';
+import {
+  PropertyNameContext,
+  YorkieSchemaParser,
+} from '../antlr/YorkieSchemaParser';
 import { YorkieSchemaListener } from '../antlr/YorkieSchemaListener';
 import {
   TypeAliasDeclarationContext,
@@ -16,12 +19,18 @@ import {
 } from '../antlr/YorkieSchemaParser';
 import { ParseTreeWalker } from 'antlr4ts/tree';
 
+/**
+ * `TypeSymbol` represents a type alias declaration.
+ */
 type TypeSymbol = {
   name: string;
   line: number;
   column: number;
 };
 
+/**
+ * `TypeReference` represents a type reference in a type alias declaration.
+ */
 type TypeReference = {
   name: string;
   parent: string;
@@ -29,37 +38,9 @@ type TypeReference = {
   column: number;
 };
 
-export class TypeCollectorListener implements YorkieSchemaListener {
-  public symbolTable: Map<string, TypeSymbol> = new Map();
-  public errors: Array<{ message: string; line: number; column: number }> = [];
-
-  public parent: string | null = null;
-  public referenceMap: Map<string, TypeReference> = new Map();
-
-  enterTypeAliasDeclaration(ctx: TypeAliasDeclarationContext) {
-    const typeName = ctx.Identifier().text;
-    const { line, charPositionInLine } = ctx.Identifier().symbol;
-    this.symbolTable.set(typeName, {
-      name: typeName,
-      line: line,
-      column: charPositionInLine,
-    });
-    this.parent = typeName;
-  }
-
-  enterTypeReference(ctx: TypeReferenceContext) {
-    const typeName = ctx.Identifier().text;
-    const { line, charPositionInLine } = ctx.Identifier().symbol;
-
-    this.referenceMap.set(typeName, {
-      name: typeName,
-      parent: this.parent!,
-      line: line,
-      column: charPositionInLine,
-    });
-  }
-}
-
+/**
+ * `Diagnostic` represents a diagnostic message.
+ */
 export type Diagnostic = {
   severity: 'error' | 'warning' | 'info';
   message: string;
@@ -68,6 +49,64 @@ export type Diagnostic = {
     end: { column: number; line: number };
   };
 };
+
+export class TypeCollectorListener implements YorkieSchemaListener {
+  private symbol: string | null = null;
+  private properties: Set<string> | null = null;
+
+  public symbolMap: Map<string, TypeSymbol> = new Map();
+  public referenceMap: Map<string, TypeReference> = new Map();
+  public errors: Array<{ message: string; line: number; column: number }> = [];
+
+  enterTypeAliasDeclaration(ctx: TypeAliasDeclarationContext) {
+    const typeName = ctx.Identifier().text;
+    const { line, charPositionInLine } = ctx.Identifier().symbol;
+
+    if (this.symbolMap.has(typeName)) {
+      this.errors.push({
+        message: `Duplicate type declaration: ${typeName}`,
+        line: line,
+        column: charPositionInLine,
+      });
+    }
+
+    this.symbolMap.set(typeName, {
+      name: typeName,
+      line: line,
+      column: charPositionInLine,
+    });
+
+    this.symbol = typeName;
+    this.properties = new Set();
+  }
+
+  enterPropertyName(ctx: PropertyNameContext) {
+    const typeName = ctx.Identifier()!.text;
+    const { line, charPositionInLine } = ctx.Identifier()!.symbol;
+
+    if (this.properties!.has(typeName)) {
+      this.errors.push({
+        message: `Duplicate property name: ${typeName}`,
+        line: line,
+        column: charPositionInLine,
+      });
+    }
+
+    this.properties!.add(typeName);
+  }
+
+  enterTypeReference(ctx: TypeReferenceContext) {
+    const typeName = ctx.Identifier().text;
+    const { line, charPositionInLine } = ctx.Identifier().symbol;
+
+    this.referenceMap.set(typeName, {
+      name: typeName,
+      parent: this.symbol!,
+      line: line,
+      column: charPositionInLine,
+    });
+  }
+}
 
 class LexerErrorListener implements ANTLRErrorListener<number> {
   constructor(private errorList: Diagnostic[]) {}
@@ -144,7 +183,7 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
 
   // TODO(hackerwins): This is a naive implementation and performance can be improved.
   for (const [, ref] of listener.referenceMap) {
-    if (!listener.symbolTable.has(ref.name)) {
+    if (!listener.symbolMap.has(ref.name)) {
       listener.errors.push({
         message: `Type '${ref.name}' is not defined.`,
         line: ref.line,
@@ -153,7 +192,7 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
     }
   }
 
-  for (const [, symbol] of listener.symbolTable) {
+  for (const [, symbol] of listener.symbolMap) {
     const visited = new Set();
     let current: string | undefined = symbol.name;
     while (current) {

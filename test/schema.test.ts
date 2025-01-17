@@ -97,6 +97,26 @@ describe('Schema:TypeScript', () => {
     `;
     expect(validate(schema).errors.length).toBe(0);
   });
+
+  it('should detect duplicate type alias declarations', () => {
+    const schema = `
+      type Document = {
+      };
+      type Document = {
+      };
+    `;
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
+  });
+
+  it('should detect duplicate keys in object', () => {
+    const schema = `
+      type Document = {
+        field: string;
+        field: number;
+      };
+    `;
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
+  });
 });
 
 describe('Schema:Yorkie', () => {
