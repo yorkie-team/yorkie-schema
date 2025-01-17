@@ -10,25 +10,50 @@ import {
 import { YorkieSchemaLexer } from '../antlr/YorkieSchemaLexer';
 import { YorkieSchemaParser } from '../antlr/YorkieSchemaParser';
 import { YorkieSchemaListener } from '../antlr/YorkieSchemaListener';
-import { TypeAliasDeclarationContext, TypeReferenceContext } from '../antlr/YorkieSchemaParser';
+import {
+  TypeAliasDeclarationContext,
+  TypeReferenceContext,
+} from '../antlr/YorkieSchemaParser';
 import { ParseTreeWalker } from 'antlr4ts/tree';
 
-export class TypeCollectorListener implements YorkieSchemaListener {
-  public symbolTable: Set<string> = new Set([]);
+type Symbol = {
+  name: string;
+  line: number;
+  column: number;
+};
 
-  public typeReferences: Array<{ typeName: string; line: number; column: number }> = [];
+type TypeReference = {
+  name: string;
+  parent: string;
+  line: number;
+  column: number;
+};
+
+export class TypeCollectorListener implements YorkieSchemaListener {
+  public symbolTable: Map<string, Symbol> = new Map();
   public errors: Array<{ message: string; line: number; column: number }> = [];
+
+  public parent: string | null = null;
+  public referenceMap: Map<string, TypeReference> = new Map();
 
   enterTypeAliasDeclaration(ctx: TypeAliasDeclarationContext) {
     const typeName = ctx.Identifier().text;
-    this.symbolTable.add(typeName);
+    const { line, charPositionInLine } = ctx.Identifier().symbol;
+    this.symbolTable.set(typeName, {
+      name: typeName,
+      line: line,
+      column: charPositionInLine,
+    });
+    this.parent = typeName;
   }
 
   enterTypeReference(ctx: TypeReferenceContext) {
     const typeName = ctx.Identifier().text;
     const { line, charPositionInLine } = ctx.Identifier().symbol;
-    this.typeReferences.push({
-      typeName: typeName,
+
+    this.referenceMap.set(typeName, {
+      name: typeName,
+      parent: this.parent!,
       line: line,
       column: charPositionInLine,
     });
@@ -80,7 +105,10 @@ class ParserErrorListener implements ANTLRErrorListener<CommonToken> {
     _e: RecognitionException | undefined,
   ): void {
     let length = 1;
-    if (offendingSymbol && offendingSymbol.stopIndex >= offendingSymbol.startIndex) {
+    if (
+      offendingSymbol &&
+      offendingSymbol.stopIndex >= offendingSymbol.startIndex
+    ) {
       length = offendingSymbol.stopIndex - offendingSymbol.startIndex + 1;
     }
 
@@ -114,15 +142,47 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
   const listener = new TypeCollectorListener();
   ParseTreeWalker.DEFAULT.walk(listener as any, tree);
 
-  listener.typeReferences.forEach((ref) => {
-    if (!listener.symbolTable.has(ref.typeName)) {
+  // TODO(hackerwins): This is a naive implementation and performance can be improved.
+  for (const [, ref] of listener.referenceMap) {
+    if (!listener.symbolTable.has(ref.name)) {
       listener.errors.push({
-        message: `Type '${ref.typeName}' is not defined.`,
+        message: `Type '${ref.name}' is not defined.`,
         line: ref.line,
         column: ref.column,
       });
     }
-  });
+  }
+
+  for (const [, symbol] of listener.symbolTable) {
+    const visited = new Set();
+    let current: string | undefined = symbol.name;
+    while (current) {
+      // 02. Check if there is a circular reference.
+      if (visited.has(current)) {
+        listener.errors.push({
+          message: `Circular reference detected: ${current} -> ${symbol}`,
+          line: symbol.line,
+          column: symbol.column,
+        });
+        break;
+      }
+      if (current === 'Document') {
+        break;
+      }
+
+      visited.add(current);
+      current = listener.referenceMap.get(current)?.parent;
+    }
+
+    // 03. Check if there is a type that is not in the document.
+    if (!current || current !== 'Document') {
+      listener.errors.push({
+        message: `Type '${symbol}' is not in the document.`,
+        line: symbol.line,
+        column: symbol.column,
+      });
+    }
+  }
 
   const semanticErrors: Array<Diagnostic> = listener.errors.map((error) => {
     return {
