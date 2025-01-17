@@ -16,7 +16,7 @@ import {
 } from '../antlr/YorkieSchemaParser';
 import { ParseTreeWalker } from 'antlr4ts/tree';
 
-type Symbol = {
+type TypeSymbol = {
   name: string;
   line: number;
   column: number;
@@ -30,7 +30,7 @@ type TypeReference = {
 };
 
 export class TypeCollectorListener implements YorkieSchemaListener {
-  public symbolTable: Map<string, Symbol> = new Map();
+  public symbolTable: Map<string, TypeSymbol> = new Map();
   public errors: Array<{ message: string; line: number; column: number }> = [];
 
   public parent: string | null = null;
@@ -160,7 +160,7 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
       // 02. Check if there is a circular reference.
       if (visited.has(current)) {
         listener.errors.push({
-          message: `Circular reference detected: ${current} -> ${symbol}`,
+          message: `Circular reference detected: ${current} -> ${symbol.name}`,
           line: symbol.line,
           column: symbol.column,
         });
@@ -177,7 +177,7 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
     // 03. Check if there is a type that is not in the document.
     if (!current || current !== 'Document') {
       listener.errors.push({
-        message: `Type '${symbol}' is not in the document.`,
+        message: `Type '${symbol.name}' is not in the document.`,
         line: symbol.line,
         column: symbol.column,
       });
