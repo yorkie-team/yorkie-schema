@@ -236,7 +236,7 @@ describe('Schema:Semantic', () => {
     expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
-  it.skip('should restrict unused type definition', () => {
+  it('should restrict unused type definition', () => {
     const schema = `
       type UserType = {
         field1: string;
@@ -245,7 +245,7 @@ describe('Schema:Semantic', () => {
     expect(validate(schema).errors.length).toBeGreaterThan(0);
   });
 
-  it.skip('should detect type cycle', () => {
+  it('should detect circular references', () => {
     const schema = `
       type Hello = {
         field1: string;
