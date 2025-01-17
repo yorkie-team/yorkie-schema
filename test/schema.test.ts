@@ -97,6 +97,34 @@ describe('Schema:TypeScript', () => {
     `;
     expect(validate(schema).errors.length).toBe(0);
   });
+
+  it('should detect duplicate type alias declarations', () => {
+    const schema = `
+      type Document = {
+      };
+      type Document = {
+      };
+    `;
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
+  });
+
+  it('should detect duplicate keys in object', () => {
+    const schema = `
+      type Document = {
+        field: string;
+        field: number;
+      };
+    `;
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
+
+    const schema2 = `
+      type Document = {
+        key: string;
+        obj: { key: string; };
+      };
+    `;
+    expect(validate(schema2).errors.length).toBe(0);
+  });
 });
 
 describe('Schema:Yorkie', () => {
@@ -255,6 +283,16 @@ describe('Schema:Semantic', () => {
       type World = {
         field1: string;
         field2: Hello;
+      };
+    `;
+    expect(validate(schema).errors.length).toBeGreaterThan(0);
+  });
+
+  it('should detect circular references with Document type', () => {
+    const schema = `
+      type Document = {
+        field1: string;
+        field2: Document;
       };
     `;
     expect(validate(schema).errors.length).toBeGreaterThan(0);
