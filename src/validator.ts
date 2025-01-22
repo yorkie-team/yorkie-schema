@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 The Yorkie Authors. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {
   CharStreams,
   CommonTokenStream,
@@ -21,26 +37,30 @@ import {
 import { ParseTreeWalker } from 'antlr4ts/tree';
 
 /**
+ * `TokenPosition` represents a position of a token.
+ */
+type TokenPosition = {
+  line: number;
+  column: number;
+};
+
+/**
  * `TypeSymbol` represents a type alias declaration.
  */
 type TypeSymbol = {
   name: string;
-  line: number;
-  column: number;
-};
+} & TokenPosition;
 
 /**
  * `TypeReference` represents a type reference in a type alias declaration.
  */
-type TypeReference = {
-  name: string;
+type TypeReference = TypeSymbol & {
   parent: string;
-  line: number;
-  column: number;
 };
 
 /**
- * `Diagnostic` represents a diagnostic message.
+ * `Diagnostic` represents a diagnostic message for a schema. It usually used
+ * for error, warning, and info messages in CodeMirror.
  */
 export type Diagnostic = {
   severity: 'error' | 'warning' | 'info';
@@ -51,7 +71,7 @@ export type Diagnostic = {
   };
 };
 
-export class TypeCollectorListener implements YorkieSchemaListener {
+export class SymbolCollector implements YorkieSchemaListener {
   private symbol: string | null = null;
   private properties: Set<string> | null = null;
 
@@ -101,6 +121,11 @@ export class TypeCollectorListener implements YorkieSchemaListener {
     }
 
     this.properties?.add(typeName);
+  }
+
+  enterPropertyTypeReference(ctx: TypeReferenceContext) {
+    const typeName = ctx.Identifier().text;
+    console.log(typeName);
   }
 
   enterTypeReference(ctx: TypeReferenceContext) {
@@ -172,10 +197,13 @@ class ParserErrorListener implements ANTLRErrorListener<CommonToken> {
   }
 }
 
-export function validate(data: string): { errors: Array<Diagnostic> } {
+/**
+ * `validate` validates the given schema and returns the list of diagnostics.
+ */
+export function validate(schema: string): { errors: Array<Diagnostic> } {
   const diagnostics: Array<Diagnostic> = [];
 
-  const stream = CharStreams.fromString(data);
+  const stream = CharStreams.fromString(schema);
   const lexer = new YorkieSchemaLexer(stream);
   lexer.removeErrorListeners();
   lexer.addErrorListener(new LexerErrorListener(diagnostics));
@@ -186,13 +214,13 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
   parser.addErrorListener(new ParserErrorListener(diagnostics));
 
   const tree = parser.document();
-  const listener = new TypeCollectorListener();
-  ParseTreeWalker.DEFAULT.walk(listener as any, tree);
+  const collector = new SymbolCollector();
+  ParseTreeWalker.DEFAULT.walk(collector as any, tree);
 
   // TODO(hackerwins): This is a naive implementation and performance can be improved.
-  for (const [, ref] of listener.referenceMap) {
-    if (!listener.symbolMap.has(ref.name)) {
-      listener.errors.push({
+  for (const [, ref] of collector.referenceMap) {
+    if (!collector.symbolMap.has(ref.name)) {
+      collector.errors.push({
         message: `Type '${ref.name}' is not defined.`,
         line: ref.line,
         column: ref.column,
@@ -200,13 +228,13 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
     }
   }
 
-  for (const [, symbol] of listener.symbolMap) {
+  for (const [, symbol] of collector.symbolMap) {
     const visited = new Set();
     let current: string | undefined = symbol.name;
     while (current) {
       // 02. Check if there is a circular reference.
       if (visited.has(current)) {
-        listener.errors.push({
+        collector.errors.push({
           message: `Circular reference detected: ${current} -> ${symbol.name}`,
           line: symbol.line,
           column: symbol.column,
@@ -215,12 +243,12 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
       }
 
       visited.add(current);
-      current = listener.referenceMap.get(current)?.parent;
+      current = collector.referenceMap.get(current)?.parent;
     }
 
     // 03. Check if there is a type that is not in the document.
     if (!visited.has('Document')) {
-      listener.errors.push({
+      collector.errors.push({
         message: `Type '${symbol.name}' is not in the document.`,
         line: symbol.line,
         column: symbol.column,
@@ -228,7 +256,7 @@ export function validate(data: string): { errors: Array<Diagnostic> } {
     }
   }
 
-  const semanticErrors: Array<Diagnostic> = listener.errors.map((error) => {
+  const semanticErrors: Array<Diagnostic> = collector.errors.map((error) => {
     return {
       severity: 'error',
       message: error.message,
